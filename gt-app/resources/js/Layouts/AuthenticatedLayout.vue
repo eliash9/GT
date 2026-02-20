@@ -6,9 +6,12 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import { usePermission } from '@/composables/usePermission';
 
+import { useDarkMode } from '@/composables/useDarkMode';
+
 const page = usePage();
 const user = computed(() => page.props.auth.user as any);
 const { can, hasRole } = usePermission();
+const { isDark, toggleDarkMode } = useDarkMode();
 
 const sidebarOpen = ref(true);
 
