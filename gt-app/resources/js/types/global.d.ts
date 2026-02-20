@@ -6,7 +6,10 @@ import { PageProps as AppPageProps } from './';
 declare global {
     interface Window {
         axios: AxiosInstance;
+        Pusher: any;
+        Echo: any;
     }
+
 
     /* eslint-disable no-var */
     var route: typeof ziggyRoute;
@@ -19,5 +22,5 @@ declare module 'vue' {
 }
 
 declare module '@inertiajs/core' {
-    interface PageProps extends InertiaPageProps, AppPageProps {}
+    interface PageProps extends InertiaPageProps, AppPageProps { }
 }

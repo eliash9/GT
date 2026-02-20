@@ -1,10 +1,37 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import VueApexCharts from 'vue3-apexcharts';
 
 const props = defineProps<{
     stats: { users: number; products: number; categories: number };
+    charts: { 
+        users_trend: number[]; 
+        product_status: { active: number; inactive: number };
+    };
 }>();
+
+const usersChartOptions = {
+    chart: { type: 'area' as const, height: 300, toolbar: { show: false }, background: 'transparent' },
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth' as const, width: 2 },
+    xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+    colors: ['#6366f1'],
+    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 90, 100] } },
+    theme: { mode: 'light' as const }
+};
+
+const usersChartSeries = [{ name: 'Users Registered', data: props.charts.users_trend }];
+
+const productChartOptions = {
+    chart: { type: 'donut' as const, background: 'transparent' },
+    labels: ['Active', 'Inactive'],
+    colors: ['#10b981', '#f43f5e'],
+    legend: { position: 'bottom' as const },
+    theme: { mode: 'light' as const }
+};
+
+const productChartSeries = [props.charts.product_status.active, props.charts.product_status.inactive];
 
 const cards = [
     { label: 'Total Users',      value: props.stats.users,      icon: 'users',   color: 'bg-indigo-500',  href: 'users.index' },
@@ -48,7 +75,22 @@ const iconPaths: Record<string, string> = {
                     </div>
                 </Link>
             </div>
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Line Chart: Users Trend -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 lg:col-span-2">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">User Registrations</h2>
+                    <VueApexCharts type="area" height="300" :options="usersChartOptions" :series="usersChartSeries" />
+                </div>
 
+                <!-- Donut Chart: Product Status -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Product Status</h2>
+                    <div class="flex items-center justify-center h-[300px]">
+                        <VueApexCharts type="donut" width="100%" :options="productChartOptions" :series="productChartSeries" />
+                    </div>
+                </div>
+            </div>
             <!-- Quick actions -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>

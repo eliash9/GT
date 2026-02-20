@@ -53,6 +53,8 @@ class UserController extends Controller
 
         $user->assignRole($request->role);
 
+        event(new \App\Events\UserCreated($user->name));
+
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
@@ -93,5 +95,21 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \Modules\User\Application\Exports\UsersExport, 'users.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \Modules\User\Application\Imports\UsersImport, $request->file('file'));
+
+        return redirect()->route('users.index')->with('success', 'Users imported successfully.');
     }
 }

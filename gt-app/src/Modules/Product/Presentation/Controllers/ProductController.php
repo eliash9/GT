@@ -16,10 +16,10 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view products')->only(['index', 'show']);
-        $this->middleware('permission:create products')->only(['create', 'store']);
-        $this->middleware('permission:edit products')->only(['edit', 'update']);
-        $this->middleware('permission:delete products')->only(['destroy']);
+        $this->middleware('permission:view products')->only(['index', 'show', 'trash']);
+        $this->middleware('permission:create products')->only(['create', 'store', 'import']);
+        $this->middleware('permission:edit products')->only(['edit', 'update', 'restore']);
+        $this->middleware('permission:delete products')->only(['destroy', 'forceDelete']);
     }
 
     public function index(): Response
@@ -73,5 +73,44 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Product deleted.');
+    }
+
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \Modules\Product\Application\Exports\ProductsExport, 'products.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \Modules\Product\Application\Imports\ProductsImport, $request->file('file'));
+
+        return redirect()->route('products.index')->with('success', 'Products imported successfully.');
+    }
+
+    public function trash(): Response
+    {
+        return Inertia::render('Product/Trash', [
+            'products' => Product::onlyTrashed()->latest()->paginate(15),
+        ]);
+    }
+
+    public function restore($id): RedirectResponse
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->restore();
+
+        return redirect()->route('products.trash')->with('success', 'Product restored.');
+    }
+
+    public function forceDelete($id): RedirectResponse
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->forceDelete();
+
+        return redirect()->route('products.trash')->with('success', 'Product permanently deleted.');
     }
 }

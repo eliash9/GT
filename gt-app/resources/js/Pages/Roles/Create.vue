@@ -24,46 +24,73 @@ const grouped = props.permissions.reduce((acc: Record<string, any[]>, p) => {
     acc[group].push(p);
     return acc;
 }, {});
+
+const getPermId = (perms: any[], action: string) => {
+    const p = perms.find(x => x.name.startsWith(action + ' '));
+    return p ? p.id : null;
+};
 </script>
 
 <template>
     <Head title="Create Role" />
     <AuthenticatedLayout>
-        <div class="max-w-3xl">
+        <div class="max-w-4xl">
             <div class="flex items-center gap-3 mb-6">
                 <Link :href="route('roles.index')" class="text-gray-500 hover:text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </Link>
-                <h1 class="text-2xl font-bold text-gray-900">Create Role</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create Role</h1>
             </div>
 
             <form @submit.prevent="submit" class="space-y-5">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
-                    <input v-model="form.name" type="text" class="input" placeholder="e.g. manager" required />
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role Name</label>
+                    <input v-model="form.name" type="text" class="w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. manager" required />
                     <p v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</p>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-sm font-semibold text-gray-700 mb-4">Assign Permissions</h3>
-                    <div class="space-y-4">
-                        <div v-for="(perms, group) in grouped" :key="group">
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 capitalize">{{ group }}</p>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                <label v-for="perm in perms" :key="perm.id" class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100">
-                                    <input type="checkbox" :value="perm.id" :checked="form.permissions.includes(perm.id)" @change="togglePerm(perm.id)" class="rounded text-indigo-600" />
-                                    <span class="text-sm text-gray-700">{{ perm.name.split(' ')[0] }}</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 overflow-x-auto">
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Permissions Matrix</h3>
+                    
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="border-b dark:border-gray-700">
+                                <th class="py-2 px-3 text-gray-600 dark:text-gray-400 font-semibold">Module</th>
+                                <th class="py-2 px-3 text-center text-gray-600 dark:text-gray-400 font-semibold">View</th>
+                                <th class="py-2 px-3 text-center text-gray-600 dark:text-gray-400 font-semibold">Create</th>
+                                <th class="py-2 px-3 text-center text-gray-600 dark:text-gray-400 font-semibold">Edit</th>
+                                <th class="py-2 px-3 text-center text-gray-600 dark:text-gray-400 font-semibold">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(perms, group) in grouped" :key="group" class="border-b dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <td class="py-3 px-3 font-medium text-gray-800 dark:text-gray-200 capitalize">{{ group }}</td>
+                                <td v-for="action in ['view', 'create', 'edit', 'delete']" :key="action" class="py-3 px-3 text-center">
+                                    <template v-if="getPermId(perms, action)">
+                                        <input 
+                                            type="checkbox" 
+                                            :value="getPermId(perms, action)" 
+                                            :checked="form.permissions.includes(getPermId(perms, action)!)" 
+                                            @change="togglePerm(getPermId(perms, action)!)" 
+                                            class="rounded w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm cursor-pointer" 
+                                        />
+                                    </template>
+                                    <template v-else>
+                                        <span class="text-gray-300 dark:text-gray-600">-</span>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="flex gap-3">
-                    <button type="submit" :disabled="form.processing" class="btn-primary">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" :disabled="form.processing" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors">
                         {{ form.processing ? 'Saving…' : 'Create Role' }}
                     </button>
-                    <Link :href="route('roles.index')" class="btn-secondary">Cancel</Link>
+                    <Link :href="route('roles.index')" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        Cancel
+                    </Link>
                 </div>
             </form>
         </div>
