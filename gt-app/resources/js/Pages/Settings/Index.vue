@@ -32,8 +32,8 @@ const groupLabels: Record<string, string> = {
     <AuthenticatedLayout>
         <div class="max-w-3xl space-y-6">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
-                <p class="text-sm text-gray-500 mt-1">Configure your application settings.</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Configure your application settings.</p>
             </div>
 
             <!-- Flash success -->
@@ -46,27 +46,27 @@ const groupLabels: Record<string, string> = {
                 <div
                     v-for="(groupSettings, groupKey) in settings"
                     :key="groupKey"
-                    class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
                 >
-                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-                        <h2 class="font-semibold text-gray-800">{{ groupLabels[String(groupKey)] ?? String(groupKey) }}</h2>
+                    <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                        <h2 class="font-semibold text-gray-800 dark:text-gray-100">{{ groupLabels[String(groupKey)] ?? String(groupKey) }}</h2>
                     </div>
-                    <div class="divide-y divide-gray-50">
+                    <div class="divide-y divide-gray-50 dark:divide-gray-700">
                         <div v-for="setting in groupSettings" :key="setting.key" class="flex items-start justify-between gap-4 px-6 py-4">
                             <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700">{{ setting.label }}</label>
-                                <p v-if="setting.description" class="text-xs text-gray-400 mt-0.5">{{ setting.description }}</p>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ setting.label }}</label>
+                                <p v-if="setting.description" class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ setting.description }}</p>
                             </div>
                             <div class="shrink-0 w-64">
                                 <!-- Boolean toggle -->
                                 <label v-if="setting.type === 'boolean'" class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" v-model="getFormItem(setting.key).value" class="sr-only peer" />
-                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                    <div class="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                                 </label>
                                 <!-- Integer input -->
-                                <input v-else-if="setting.type === 'integer'" type="number" v-model="getFormItem(setting.key).value" class="input" />
+                                <input v-else-if="setting.type === 'integer'" type="number" v-model="getFormItem(setting.key).value" class="input dark:bg-gray-900 dark:border-gray-600 dark:text-white" />
                                 <!-- String input -->
-                                <input v-else type="text" v-model="getFormItem(setting.key).value" class="input" />
+                                <input v-else type="text" v-model="getFormItem(setting.key).value" class="input dark:bg-gray-900 dark:border-gray-600 dark:text-white" />
                             </div>
                         </div>
                     </div>

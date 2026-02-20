@@ -34,8 +34,8 @@ const doDelete = () => {
     <AuthenticatedLayout>
         <div class="space-y-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
-                <p class="text-sm text-gray-500 mt-1">Manage user accounts and their roles.</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">User Management</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage user accounts and their roles.</p>
             </div>
 
             <DataTable
@@ -55,9 +55,9 @@ const doDelete = () => {
                         v-for="role in row.roles"
                         :key="role.id"
                         class="inline-block px-2 py-0.5 text-xs rounded-full font-medium mr-1"
-                        :class="role.name === 'super-admin' ? 'bg-purple-100 text-purple-700' :
-                                role.name === 'admin'       ? 'bg-indigo-100 text-indigo-700' :
-                                                              'bg-gray-100 text-gray-700'"
+                        :class="role.name === 'super-admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+                                role.name === 'admin'       ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' :
+                                                              'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'"
                     >{{ role.name }}</span>
                 </template>
                 <template #created_at="{ row }">
@@ -74,7 +74,7 @@ const doDelete = () => {
                     :href="link.url"
                     v-html="link.label"
                     class="px-3 py-1.5 text-sm rounded-lg border"
-                    :class="link.active ? 'bg-indigo-600 text-white border-indigo-600' : link.url ? 'border-gray-300 hover:bg-gray-50' : 'border-gray-200 text-gray-400 cursor-not-allowed'"
+                    :class="link.active ? 'bg-indigo-600 text-white border-indigo-600' : link.url ? 'border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300' : 'border-gray-200 text-gray-400 cursor-not-allowed dark:border-gray-700 dark:text-gray-600'"
                 />
             </div>
         </div>

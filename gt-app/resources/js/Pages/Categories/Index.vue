@@ -32,8 +32,8 @@ const doDelete = () => {
     <AuthenticatedLayout>
         <div class="space-y-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Categories</h1>
-                <p class="text-sm text-gray-500 mt-1">Manage content categories.</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Categories</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage content categories.</p>
             </div>
 
             <DataTable

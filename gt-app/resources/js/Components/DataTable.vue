@@ -68,7 +68,7 @@ defineEmits<{ (e: 'delete', row: any): void }>();
                             {{ emptyText ?? 'No records found.' }}
                         </td>
                     </tr>
-                    <tr v-for="row in rows" :key="row.id" class="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                    <tr v-for="row in rows" :key="row.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td
                             v-for="col in columns"
                             :key="col.key"
@@ -83,14 +83,14 @@ defineEmits<{ (e: 'delete', row: any): void }>();
                                     <Link
                                         v-if="editRoute && canEdit"
                                         :href="route(editRoute, row.id)"
-                                        class="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium"
                                     >
                                         Edit
                                     </Link>
                                     <button
                                         v-if="deleteRoute && canDelete"
                                         @click="$emit('delete', row)"
-                                        class="text-red-500 hover:text-red-700 text-sm font-medium"
+                                        class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium"
                                     >
                                         Delete
                                     </button>
