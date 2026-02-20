@@ -6,11 +6,25 @@ use Illuminate\Http\Request;
 
 class SantriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $santris = \App\Models\Santri::latest()->get();
+        $query = \App\Models\Santri::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%")
+                    ->orWhere('kelas', 'like', "%{$search}%")
+                    ->orWhere('nama_ayah', 'like', "%{$search}%");
+            });
+        }
+
+        $santris = $query->latest()->paginate(10)->withQueryString();
+
         return inertia('Santri/Index', [
-            'santris' => $santris
+            'santris' => $santris,
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -83,12 +97,67 @@ class SantriController extends Controller
 
     public function destroy(\App\Models\Santri $santri)
     {
+        $santri->delete();
+
+        return redirect()->route('santris.index')->with('success', 'Data santri berhasil masuk ke keranjang sampah (soft delete).');
+    }
+
+    public function trash(Request $request)
+    {
+        $query = \App\Models\Santri::onlyTrashed();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%")
+                    ->orWhere('kelas', 'like', "%{$search}%")
+                    ->orWhere('nama_ayah', 'like', "%{$search}%");
+            });
+        }
+
+        $santris = $query->latest()->paginate(10)->withQueryString();
+
+        return inertia('Santri/Trash', [
+            'santris' => $santris,
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
+    public function restore($id)
+    {
+        $santri = \App\Models\Santri::onlyTrashed()->findOrFail($id);
+        $santri->restore();
+
+        return redirect()->route('santris.trash')->with('success', 'Data santri berhasil dipulihkan.');
+    }
+
+    public function forceDelete($id)
+    {
+        $santri = \App\Models\Santri::onlyTrashed()->findOrFail($id);
+
         if ($santri->foto) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($santri->foto);
         }
 
-        $santri->delete();
+        $santri->forceDelete();
 
-        return redirect()->route('santris.index')->with('success', 'Data santri berhasil dihapus.');
+        return redirect()->route('santris.trash')->with('success', 'Data santri berhasil dihapus secara permanen.');
+    }
+
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SantriExport, 'data_santri.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file',
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\SantriImport, $request->file('file'));
+
+        return redirect()->route('santris.index')->with('success', 'Data Santri berhasil diimpor.');
     }
 }

@@ -71,6 +71,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', \Modules\User\Presentation\Controllers\RoleController::class);
 
     // Santri Management
+    Route::get('santris/trash', [\App\Http\Controllers\SantriController::class, 'trash'])->name('santris.trash');
+    Route::post('santris/{santri}/restore', [\App\Http\Controllers\SantriController::class, 'restore'])->name('santris.restore')->withTrashed();
+    Route::delete('santris/{santri}/force-delete', [\App\Http\Controllers\SantriController::class, 'forceDelete'])->name('santris.force-delete')->withTrashed();
+    Route::get('santris/export', [\App\Http\Controllers\SantriController::class, 'export'])->name('santris.export');
+    Route::post('santris/import', [\App\Http\Controllers\SantriController::class, 'import'])->name('santris.import');
     Route::resource('santris', \App\Http\Controllers\SantriController::class);
 
     // Category Management

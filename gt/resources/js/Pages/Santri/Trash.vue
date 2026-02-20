@@ -15,7 +15,7 @@ const search = ref(props.filters?.search ?? '');
 
 watch(search, debounce((value) => {
     router.get(
-        route('santris.index'),
+        route('santris.trash'),
         { search: value },
         { preserveState: true, replace: true }
     );
@@ -32,13 +32,6 @@ const columns = [
     { key: 'status_tugas',  label: 'Status Tugas' },
 ];
 
-const confirmDelete = ref<any>(null);
-const doDelete = () => {
-    router.delete(route('santris.destroy', confirmDelete.value.id), {
-        onSuccess: () => confirmDelete.value = null,
-    });
-};
-
 const handleImport = (e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files[0]) {
@@ -50,6 +43,20 @@ const handleImport = (e: Event) => {
         });
     }
 };
+
+const restoreItem = ref<any>(null);
+const doRestore = () => {
+    router.post(route('santris.restore', restoreItem.value.id), {}, {
+        onSuccess: () => restoreItem.value = null,
+    });
+};
+
+const confirmDelete = ref<any>(null);
+const doDelete = () => {
+    router.delete(route('santris.force-delete', confirmDelete.value.id), {
+        onSuccess: () => confirmDelete.value = null,
+    });
+};
 </script>
 
 <template>
@@ -57,22 +64,33 @@ const handleImport = (e: Event) => {
     <AuthenticatedLayout>
         <div class="space-y-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Data Santri (Guru Tugas)</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola data santri dan status penugasannya.</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Tong Sampah Santri</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Data santri yang sudah dihapus sementara.</p>
             </div>
 
             <DataTable
                 :columns="columns"
                 :rows="santris.data"
-                create-route="santris.create"
-                create-label="Tambah Santri"
-                edit-route="santris.edit"
-                delete-route="santris.destroy"
-                :can-create="true"
-                :can-edit="true"
+                empty-text="Tidak ada data di tong sampah."
+                :can-create="false"
+                :can-edit="false"
                 :can-delete="true"
                 @delete="confirmDelete = $event"
             >
+                <template #actions="{ row }">
+                    <button
+                        @click="restoreItem = row"
+                        class="text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 text-sm font-medium"
+                    >
+                        Pulihkan
+                    </button>
+                    <button
+                        @click="confirmDelete = row"
+                        class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium"
+                    >
+                        Hapus Permanen
+                    </button>
+                </template>
                 <template #filters>
                     <div class="flex flex-col sm:flex-row gap-2 justify-between w-full">
                         <div class="w-full sm:max-w-xs relative">
@@ -84,25 +102,16 @@ const handleImport = (e: Event) => {
                             <input
                                 v-model="search"
                                 type="text"
-                                placeholder="Cari santri..."
+                                placeholder="Cari santri dihapus..."
                                 class="pl-10 input dark:bg-gray-800 dark:text-white dark:border-gray-700 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300"
                             />
                         </div>
                         <div class="flex gap-2">
-                        <Link :href="route('santris.trash')" class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            Tong Sampah
-                        </Link>
-                        <a :href="route('santris.export')" class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            Export
-                        </a>
-                        <label class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                            Import
-                            <input type="file" class="hidden" @change="handleImport" accept=".xlsx,.csv" />
-                        </label>
-                    </div>
+                            <Link :href="route('santris.index')" class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                Kembali ke Data Santri
+                            </Link>
+                        </div>
                     </div>
                 </template>
                 <template #foto="{ row }">
@@ -135,9 +144,16 @@ const handleImport = (e: Event) => {
 
         <ConfirmModal
             :show="!!confirmDelete"
-            :message="`Hapus data santri '${confirmDelete?.nama}'?`"
+            :message="`Hapus PERMANEN data santri '${confirmDelete?.nama}'? Data tidak bisa dikembalikan.`"
             @confirm="doDelete"
             @cancel="confirmDelete = null"
+        />
+
+        <ConfirmModal
+            :show="!!restoreItem"
+            :message="`Pulihkan data santri '${restoreItem?.nama}'?`"
+            @confirm="doRestore"
+            @cancel="restoreItem = null"
         />
     </AuthenticatedLayout>
 </template>
