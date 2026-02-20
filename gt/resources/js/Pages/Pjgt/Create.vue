@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 
 const form = useForm({
+    id_pjgt: '',
     nama: '',
     no_hp: '',
 });
@@ -23,6 +24,12 @@ const submit = () => form.post(route('pjgts.store'));
 
             <form @submit.prevent="submit" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 space-y-5">
                 <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ID PJGT</label>
+                        <input v-model="form.id_pjgt" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="ID PJGT (Biarkan kosong untuk otomatis atau angka bebas)" />
+                        <p v-if="form.errors.id_pjgt" class="text-red-500 text-xs mt-1">{{ form.errors.id_pjgt }}</p>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
                         <input v-model="form.nama" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Nama Lengkap PJGT" required />

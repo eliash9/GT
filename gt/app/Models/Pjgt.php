@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pjgt extends Model
 {
-    protected $fillable = ['nama', 'no_hp'];
+    protected $fillable = ['id_pjgt', 'nama', 'no_hp'];
 
     public function wilayahs()
     {

@@ -15,6 +15,7 @@ class PjgtController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('nama', 'like', "%{$search}%")
+                  ->orWhere('id_pjgt', 'like', "%{$search}%")
                   ->orWhere('no_hp', 'like', "%{$search}%");
         }
 
@@ -34,6 +35,7 @@ class PjgtController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'id_pjgt' => 'nullable|string|max:255|unique:pjgts,id_pjgt',
             'nama' => 'required|string|max:255',
             'no_hp' => 'nullable|string|max:50',
         ]);
@@ -53,6 +55,7 @@ class PjgtController extends Controller
     public function update(Request $request, Pjgt $pjgt)
     {
         $validated = $request->validate([
+            'id_pjgt' => 'nullable|string|max:255|unique:pjgts,id_pjgt,' . $pjgt->id,
             'nama' => 'required|string|max:255',
             'no_hp' => 'nullable|string|max:50',
         ]);

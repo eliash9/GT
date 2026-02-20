@@ -75,7 +75,8 @@ const doDelete = () => {
 
                 <template #pjgt="{ row }">
                     <span v-if="row.pjgt">{{ row.pjgt.nama }}</span>
-                    <span v-else class="text-gray-400 italic">Belum ditentukan</span>
+                    <span v-if="row.pjgt && row.pjgt.id_pjgt" class="text-xs text-gray-500 block">ID: {{ row.pjgt.id_pjgt }}</span>
+                    <span v-else-if="!row.pjgt" class="text-gray-400 italic">Belum ditentukan</span>
                 </template>
             </DataTable>
 

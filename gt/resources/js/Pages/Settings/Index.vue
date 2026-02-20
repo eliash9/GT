@@ -21,6 +21,13 @@ const submit = () => form.post(route('settings.update'));
 
 const getFormItem = (key: string) => form.settings.find((s: any) => s.key === key)!;
 
+const handleFileChange = (key: string, e: Event) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+        getFormItem(key).value = target.files[0];
+    }
+};
+
 const groupLabels: Record<string, string> = {
     general: 'General Settings',
     email:   'Email Settings',
@@ -65,6 +72,13 @@ const groupLabels: Record<string, string> = {
                                 </label>
                                 <!-- Integer input -->
                                 <input v-else-if="setting.type === 'integer'" type="number" v-model="getFormItem(setting.key).value" class="input dark:bg-gray-900 dark:border-gray-600 dark:text-white" />
+                                <!-- Image input -->
+                                <div v-else-if="setting.type === 'image'">
+                                    <div v-if="typeof setting.value === 'string' && setting.value" class="mb-2">
+                                        <img :src="setting.value" class="h-12 w-auto object-contain bg-gray-100 dark:bg-gray-900 p-1 rounded" />
+                                    </div>
+                                    <input type="file" @change="handleFileChange(setting.key, $event)" accept="image/*" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-gray-700 dark:file:text-white" />
+                                </div>
                                 <!-- String input -->
                                 <input v-else type="text" v-model="getFormItem(setting.key).value" class="input dark:bg-gray-900 dark:border-gray-600 dark:text-white" />
                             </div>

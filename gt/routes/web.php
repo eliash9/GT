@@ -18,7 +18,8 @@ Route::get('/dashboard', function () {
     $stats = [
         'users' => \Modules\User\Infrastructure\Models\User::count(),
         'santris' => \App\Models\Santri::count(),
-        'categories' => \Modules\Category\Infrastructure\Models\Category::count(),
+        'lembagas' => \App\Models\Lembaga::count(),
+        'pjgts' => \App\Models\Pjgt::count(),
     ];
 
     $monthlyUsers = \Modules\User\Infrastructure\Models\User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')

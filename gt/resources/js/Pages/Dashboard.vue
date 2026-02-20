@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 
 const props = defineProps<{
-    stats: { users: number; santris: number; categories: number };
+    stats: { users: number; santris: number; lembagas: number; pjgts: number };
     charts: { 
         users_trend: number[]; 
         santri_status: { menunggu: number; bertugas: number; selesai: number };
@@ -34,9 +34,10 @@ const santriChartOptions = {
 const santriChartSeries = [props.charts.santri_status.menunggu, props.charts.santri_status.bertugas, props.charts.santri_status.selesai];
 
 const cards = [
-    { label: 'Total Users',      value: props.stats.users,      icon: 'users',   color: 'bg-indigo-500',  href: 'users.index' },
-    { label: 'Data Santri',      value: props.stats.santris,    icon: 'package', color: 'bg-emerald-500', href: 'santris.index' },
-    { label: 'Total Categories', value: props.stats.categories, icon: 'tag',     color: 'bg-amber-500',   href: 'categories.index' },
+    { label: 'Data Santri',      value: props.stats.santris,  icon: 'package', color: 'bg-emerald-500', href: 'santris.index' },
+    { label: 'Lembaga Penerima', value: props.stats.lembagas, icon: 'tag',     color: 'bg-amber-500',   href: 'lembagas.index' },
+    { label: 'Koordinator/PJGT', value: props.stats.pjgts,    icon: 'users',   color: 'bg-blue-500',    href: 'pjgts.index' },
+    { label: 'Total Users',      value: props.stats.users,    icon: 'users',   color: 'bg-indigo-500',  href: 'users.index' },
 ];
 
 const iconPaths: Record<string, string> = {
@@ -57,7 +58,7 @@ const iconPaths: Record<string, string> = {
             </div>
 
             <!-- Stat cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Link
                     v-for="card in cards"
                     :key="card.label"
@@ -107,11 +108,11 @@ const iconPaths: Record<string, string> = {
                         </div>
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300">Tambah Santri</span>
                     </Link>
-                    <Link :href="route('categories.create')" class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-amber-400 dark:hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-center group">
+                    <Link :href="route('lembagas.create')" class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-amber-400 dark:hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-center group">
                         <div class="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/50 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         </div>
-                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-amber-700 dark:group-hover:text-amber-300">New Category</span>
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-amber-700 dark:group-hover:text-amber-300">Tambah Lembaga</span>
                     </Link>
                     <Link :href="route('settings.index')" class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center group">
                         <div class="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 flex items-center justify-center">

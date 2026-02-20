@@ -22,6 +22,7 @@ watch(search, debounce((value) => {
 }, 300));
 
 const columns = [
+    { key: 'id_pjgt', label: 'ID PJGT' },
     { key: 'nama', label: 'Nama Lengkap' },
     { key: 'no_hp', label: 'Nomor HP' },
 ];
@@ -94,6 +95,11 @@ const handleImport = (e: Event) => {
                             </label>
                         </div>
                     </div>
+                </template>
+
+                <template #id_pjgt="{ row }">
+                    <span v-if="row.id_pjgt" class="font-medium text-gray-900 dark:text-gray-100">{{ row.id_pjgt }}</span>
+                    <span v-else class="text-gray-400 italic text-sm">Kosong</span>
                 </template>
             </DataTable>
 

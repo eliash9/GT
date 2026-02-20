@@ -22,14 +22,22 @@ class RolesAndPermissionsSeeder extends Seeder
             'create roles',
             'edit roles',
             'delete roles',
-            'view products',
-            'create products',
-            'edit products',
-            'delete products',
-            'view categories',
-            'create categories',
-            'edit categories',
-            'delete categories',
+            'view santris',
+            'create santris',
+            'edit santris',
+            'delete santris',
+            'view lembagas',
+            'create lembagas',
+            'edit lembagas',
+            'delete lembagas',
+            'view wilayahs',
+            'create wilayahs',
+            'edit wilayahs',
+            'delete wilayahs',
+            'view pjgts',
+            'create pjgts',
+            'edit pjgts',
+            'delete pjgts',
             'view settings',
             'edit settings',
         ];
@@ -43,8 +51,10 @@ class RolesAndPermissionsSeeder extends Seeder
         // Roles
         $staff = Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
         $staff->syncPermissions([
-            'view products',
-            'view categories',
+            'view santris',
+            'view lembagas',
+            'view wilayahs',
+            'view pjgts',
         ]);
 
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);

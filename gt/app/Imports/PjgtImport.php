@@ -11,6 +11,7 @@ class PjgtImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Pjgt([
+            'id_pjgt' => $row['id_pjgt'] ?? null,
             'nama' => $row['nama_lengkap'] ?? null,
             'no_hp' => $row['nomor_hp'] ?? null,
         ]);

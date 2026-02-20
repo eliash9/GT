@@ -18,6 +18,7 @@ class PjgtExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'ID',
+            'ID PJGT',
             'Nama Lengkap',
             'Nomor HP'
         ];
@@ -27,6 +28,7 @@ class PjgtExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $pjgt->id,
+            $pjgt->id_pjgt,
             $pjgt->nama,
             $pjgt->no_hp,
         ];

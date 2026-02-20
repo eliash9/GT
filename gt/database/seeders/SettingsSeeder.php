@@ -11,6 +11,8 @@ class SettingsSeeder extends Seeder
     {
         $settings = [
             ['key' => 'app_name', 'value' => 'GT App', 'type' => 'string', 'group' => 'general', 'label' => 'Application Name'],
+            ['key' => 'app_logo', 'value' => null, 'type' => 'image', 'group' => 'general', 'label' => 'Application Logo'],
+            ['key' => 'app_favicon', 'value' => null, 'type' => 'image', 'group' => 'general', 'label' => 'Application Favicon'],
             ['key' => 'app_description', 'value' => 'Starter Pack App', 'type' => 'string', 'group' => 'general', 'label' => 'Application Description'],
             ['key' => 'maintenance_mode', 'value' => '0', 'type' => 'boolean', 'group' => 'general', 'label' => 'Maintenance Mode'],
             ['key' => 'items_per_page', 'value' => '15', 'type' => 'integer', 'group' => 'general', 'label' => 'Items Per Page'],

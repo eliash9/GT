@@ -59,15 +59,21 @@ const navItems = computed((): NavItem[] => {
         });
     }
 
-    items.push({ label: 'Data GT', icon: 'users', route: 'santris.index' });
-    items.push({
-        label: 'Data Master', icon: 'tag',
-        children: [
-            { label: 'Lembaga/Madrasah', route: 'lembagas.index' },
-            { label: 'Kelompok Wilayah', route: 'wilayahs.index' },
-            { label: 'Data PJGT', route: 'pjgts.index' },
-        ],
-    });
+    if (can('view santris')) {
+        items.push({ label: 'Data GT', icon: 'users', route: 'santris.index' });
+    }
+    
+    if (can('view lembagas') || can('view wilayahs') || can('view pjgts')) {
+        items.push({
+            label: 'Data Master', icon: 'tag',
+            children: [
+                ...(can('view lembagas') ? [{ label: 'Lembaga/Madrasah', route: 'lembagas.index' }] : []),
+                ...(can('view wilayahs') ? [{ label: 'Kelompok Wilayah', route: 'wilayahs.index' }] : []),
+                ...(can('view pjgts') ? [{ label: 'Data PJGT', route: 'pjgts.index' }] : []),
+            ],
+        });
+    }
+
     if (can('view settings')) {
         items.push({
             label: 'Settings', icon: 'settings',

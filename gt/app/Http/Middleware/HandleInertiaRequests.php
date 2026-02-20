@@ -34,6 +34,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
             ],
+            'app_settings' => [
+                'name' => \Modules\Setting\Infrastructure\Models\Setting::get('app_name', config('app.name')),
+                'logo' => \Modules\Setting\Infrastructure\Models\Setting::get('app_logo'),
+            ],
         ];
     }
 }
