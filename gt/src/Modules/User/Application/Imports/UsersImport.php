@@ -1,0 +1,20 @@
+<?php
+
+namespace Modules\User\Application\Imports;
+
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Modules\User\Infrastructure\Models\User;
+
+class UsersImport implements ToModel, WithHeadingRow
+{
+    public function model(array $row)
+    {
+        return new User([
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'password' => Hash::make($row['password'] ?? 'password'),
+        ]);
+    }
+}
