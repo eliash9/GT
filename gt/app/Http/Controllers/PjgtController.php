@@ -4,62 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\Pjgt;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PjgtController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Pjgt::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('nama', 'like', "%{$search}%")
+                  ->orWhere('no_hp', 'like', "%{$search}%");
+        }
+
+        $pjgts = $query->latest()->paginate(10)->withQueryString();
+
+        return Inertia::render('Pjgt/Index', [
+            'pjgts' => $pjgts,
+            'filters' => $request->only(['search']),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return Inertia::render('Pjgt/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|max:50',
+        ]);
+
+        Pjgt::create($validated);
+
+        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pjgt $pjgt)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Pjgt $pjgt)
     {
-        //
+        return Inertia::render('Pjgt/Edit', [
+            'pjgt' => $pjgt
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Pjgt $pjgt)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'no_hp' => 'nullable|string|max:50',
+        ]);
+
+        $pjgt->update($validated);
+
+        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Pjgt $pjgt)
     {
-        //
+        $pjgt->delete();
+
+        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\PjgtExport, 'data_pjgt.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file',
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\PjgtImport, $request->file('file'));
+
+        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil diimpor.');
     }
 }

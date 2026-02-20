@@ -40,7 +40,7 @@ interface NavItem {
     icon: string;
     route?: string;
     permission?: string;
-    children?: { label: string; route: string; permission: string }[];
+    children?: { label: string; route: string; permission?: string }[];
 }
 
 // Nav items - each has a required permission. null = always visible.
@@ -59,8 +59,15 @@ const navItems = computed((): NavItem[] => {
         });
     }
 
-    items.push({ label: 'Data Santri', icon: 'users', route: 'santris.index' });
-    if (can('view categories')) items.push({ label: 'Categories', icon: 'tag',     route: 'categories.index', permission: 'view categories' });
+    items.push({ label: 'Data GT', icon: 'users', route: 'santris.index' });
+    items.push({
+        label: 'Data Master', icon: 'tag',
+        children: [
+            { label: 'Lembaga/Madrasah', route: 'lembagas.index' },
+            { label: 'Kelompok Wilayah', route: 'wilayahs.index' },
+            { label: 'Data PJGT', route: 'pjgts.index' },
+        ],
+    });
     if (can('view settings')) {
         items.push({
             label: 'Settings', icon: 'settings',

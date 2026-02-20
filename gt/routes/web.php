@@ -81,6 +81,15 @@ Route::middleware('auth')->group(function () {
     // Category Management
     Route::resource('categories', \Modules\Category\Presentation\Controllers\CategoryController::class);
 
+    // Lembaga, Wilayah, Pjgt
+    Route::get('pjgts/export', [\App\Http\Controllers\PjgtController::class, 'export'])->name('pjgts.export');
+    Route::post('pjgts/import', [\App\Http\Controllers\PjgtController::class, 'import'])->name('pjgts.import');
+    Route::resource('pjgts', \App\Http\Controllers\PjgtController::class);
+    Route::resource('wilayahs', \App\Http\Controllers\WilayahController::class);
+    Route::get('lembagas/export', [\App\Http\Controllers\LembagaController::class, 'export'])->name('lembagas.export');
+    Route::post('lembagas/import', [\App\Http\Controllers\LembagaController::class, 'import'])->name('lembagas.import');
+    Route::resource('lembagas', \App\Http\Controllers\LembagaController::class);
+
     // Settings
     Route::get('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'update'])->name('settings.update');
