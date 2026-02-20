@@ -31,7 +31,14 @@ class SantriController extends Controller
             'no_hp' => 'nullable|string',
             'angkatan' => 'required|integer',
             'status_tugas' => 'required|in:Menunggu,Sedang Bertugas,Selesai',
+            'kelas' => 'nullable|string|max:255',
+            'nama_ayah' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('santri_fotos', 'public');
+        }
 
         \App\Models\Santri::create($validated);
 
@@ -57,7 +64,17 @@ class SantriController extends Controller
             'no_hp' => 'nullable|string',
             'angkatan' => 'required|integer',
             'status_tugas' => 'required|in:Menunggu,Sedang Bertugas,Selesai',
+            'kelas' => 'nullable|string|max:255',
+            'nama_ayah' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('foto')) {
+            if ($santri->foto) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($santri->foto);
+            }
+            $validated['foto'] = $request->file('foto')->store('santri_fotos', 'public');
+        }
 
         $santri->update($validated);
 
@@ -66,6 +83,10 @@ class SantriController extends Controller
 
     public function destroy(\App\Models\Santri $santri)
     {
+        if ($santri->foto) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($santri->foto);
+        }
+
         $santri->delete();
 
         return redirect()->route('santris.index')->with('success', 'Data santri berhasil dihapus.');

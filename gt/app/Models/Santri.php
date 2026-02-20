@@ -15,6 +15,9 @@ class Santri extends Model
         'alamat_lengkap',
         'no_hp',
         'angkatan',
-        'status_tugas'
+        'status_tugas',
+        'foto',
+        'kelas',
+        'nama_ayah'
     ];
 }

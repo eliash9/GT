@@ -10,8 +10,11 @@ const form = useForm({
     tanggal_lahir: '',
     alamat_lengkap: '',
     no_hp: '',
+    nama_ayah: '',
     angkatan: '',
+    kelas: '',
     status_tugas: 'Menunggu',
+    foto: null as File | null,
 });
 
 const submit = () => form.post(route('santris.store'));
@@ -71,6 +74,23 @@ const submit = () => form.post(route('santris.store'));
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Lengkap</label>
                         <textarea v-model="form.alamat_lengkap" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" rows="3" placeholder="Alamat lengkap"></textarea>
                         <p v-if="form.errors.alamat_lengkap" class="text-red-500 text-xs mt-1">{{ form.errors.alamat_lengkap }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Ayah / Wali</label>
+                        <input v-model="form.nama_ayah" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Nama Ayah/Wali" />
+                        <p v-if="form.errors.nama_ayah" class="text-red-500 text-xs mt-1">{{ form.errors.nama_ayah }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas</label>
+                        <input v-model="form.kelas" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Kelas saat ini" />
+                        <p v-if="form.errors.kelas" class="text-red-500 text-xs mt-1">{{ form.errors.kelas }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Upload Foto</label>
+                        <input @input="form.foto = ($event.target as HTMLInputElement).files?.[0] ?? null" type="file" accept="image/*" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" />
+                        <p v-if="form.errors.foto" class="text-red-500 text-xs mt-1">{{ form.errors.foto }}</p>
                     </div>
                     
                     <div>

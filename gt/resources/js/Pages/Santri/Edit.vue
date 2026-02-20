@@ -14,11 +14,17 @@ const form = useForm({
     tanggal_lahir: props.santri.tanggal_lahir,
     alamat_lengkap: props.santri.alamat_lengkap ?? '',
     no_hp: props.santri.no_hp ?? '',
+    nama_ayah: props.santri.nama_ayah ?? '',
     angkatan: props.santri.angkatan,
+    kelas: props.santri.kelas ?? '',
     status_tugas: props.santri.status_tugas,
+    foto: null as File | null,
+    _method: 'PUT',
 });
 
-const submit = () => form.put(route('santris.update', props.santri.id));
+const submit = () => form.post(route('santris.update', props.santri.id), {
+    forceFormData: true,
+});
 </script>
 
 <template>
@@ -75,6 +81,28 @@ const submit = () => form.put(route('santris.update', props.santri.id));
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Lengkap</label>
                         <textarea v-model="form.alamat_lengkap" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" rows="3" placeholder="Alamat lengkap"></textarea>
                         <p v-if="form.errors.alamat_lengkap" class="text-red-500 text-xs mt-1">{{ form.errors.alamat_lengkap }}</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Ayah / Wali</label>
+                        <input v-model="form.nama_ayah" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Nama Ayah/Wali" />
+                        <p v-if="form.errors.nama_ayah" class="text-red-500 text-xs mt-1">{{ form.errors.nama_ayah }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas</label>
+                        <input v-model="form.kelas" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Kelas saat ini" />
+                        <p v-if="form.errors.kelas" class="text-red-500 text-xs mt-1">{{ form.errors.kelas }}</p>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Upload Foto (Opsional: Kosongkan jika tidak ingin mengubah)</label>
+                        <div class="flex items-center gap-4">
+                            <img v-if="props.santri.foto" :src="'/storage/' + props.santri.foto" class="h-16 w-16 rounded-full object-cover border border-gray-200" alt="Foto saat ini" />
+                            <div class="flex-1">
+                                <input @input="form.foto = ($event.target as HTMLInputElement).files?.[0] ?? null" type="file" accept="image/*" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" />
+                                <p v-if="form.errors.foto" class="text-red-500 text-xs mt-1">{{ form.errors.foto }}</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <div>

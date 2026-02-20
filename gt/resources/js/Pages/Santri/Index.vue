@@ -10,9 +10,12 @@ const props = defineProps<{
 }>();
 
 const columns = [
+    { key: 'foto',          label: 'Foto' },
     { key: 'nis',           label: 'NIS' },
     { key: 'nama',          label: 'Nama Lengkap' },
     { key: 'jenis_kelamin', label: 'Gender' },
+    { key: 'kelas',         label: 'Kelas' },
+    { key: 'nama_ayah',     label: 'Nama Ayah' },
     { key: 'angkatan',      label: 'Angkatan' },
     { key: 'status_tugas',  label: 'Status Tugas' },
 ];
@@ -46,6 +49,10 @@ const doDelete = () => {
                 :can-delete="true"
                 @delete="confirmDelete = $event"
             >
+                <template #foto="{ row }">
+                    <img v-if="row.foto" :src="'/storage/' + row.foto" class="h-10 w-10 rounded-full object-cover border border-gray-200" alt="Foto" />
+                    <div v-else class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                </template>
                 <template #status_tugas="{ row }">
                     <span
                         class="inline-block px-2 py-0.5 text-xs rounded-full font-medium"
