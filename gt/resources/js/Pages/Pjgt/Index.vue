@@ -69,7 +69,7 @@ const handleImport = (e: Event) => {
                 @delete="confirmDelete = $event"
             >
                 <template #filters>
-                    <div class="flex flex-col sm:flex-row gap-2 justify-between w-full">
+                    <div class="flex flex-col sm:flex-row gap-2  w-full">
                         <div class="w-full sm:max-w-xs relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,8 +98,26 @@ const handleImport = (e: Event) => {
                 </template>
 
                 <template #id_pjgt="{ row }">
-                    <span v-if="row.id_pjgt" class="font-medium text-gray-900 dark:text-gray-100">{{ row.id_pjgt }}</span>
+                    <span v-if="row.id_pjgt" class="font-medium font-mono text-gray-900 dark:text-gray-100">{{ row.id_pjgt }}</span>
                     <span v-else class="text-gray-400 italic text-sm">Kosong</span>
+                </template>
+                <template #nama="{ row }">
+                    <Link :href="route('pjgts.show', row.id)" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {{ row.nama }}
+                    </Link>
+                </template>
+                <template #actions="{ row }">
+                    <div class="flex items-center justify-end gap-3">
+                        <Link :href="route('pjgts.show', row.id)" class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 text-sm font-medium">
+                            Detail
+                        </Link>
+                        <Link :href="route('pjgts.edit', row.id)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
+                            Edit
+                        </Link>
+                        <button @click="$emit('delete', row)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium">
+                            Delete
+                        </button>
+                    </div>
                 </template>
             </DataTable>
 

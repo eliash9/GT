@@ -68,6 +68,7 @@ const navItems = computed((): NavItem[] => {
             label: 'Data Master', icon: 'tag',
             children: [
                 ...(can('view lembagas') ? [{ label: 'Lembaga/Madrasah', route: 'lembagas.index' }] : []),
+                ...(can('view lembagas') ? [{ label: '🗺️ Peta Sebaran', route: 'lembagas.sebaran' }] : []),
                 ...(can('view wilayahs') ? [{ label: 'Kelompok Wilayah', route: 'wilayahs.index' }] : []),
                 ...(can('view pjgts') ? [{ label: 'Data PJGT', route: 'pjgts.index' }] : []),
             ],
@@ -116,7 +117,7 @@ const icons: Record<string, string> = {
             <div class="flex items-center gap-3 px-4 py-5 border-b border-gray-700">
                 <Link :href="route('dashboard')" class="flex items-center gap-2 min-w-0">
                     <ApplicationLogo class="h-8 w-8 fill-current text-indigo-400 shrink-0" />
-                    <span v-if="sidebarOpen" class="font-bold text-lg text-white truncate">GT App</span>
+                    <span v-if="sidebarOpen" class="font-bold text-lg text-white truncate">UGT PSM</span>
                 </Link>
                 <button @click="sidebarOpen = !sidebarOpen" class="ml-auto text-gray-400 hover:text-white shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

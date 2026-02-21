@@ -89,6 +89,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('wilayahs', \App\Http\Controllers\WilayahController::class);
     Route::get('lembagas/export', [\App\Http\Controllers\LembagaController::class, 'export'])->name('lembagas.export');
     Route::post('lembagas/import', [\App\Http\Controllers\LembagaController::class, 'import'])->name('lembagas.import');
+    Route::get('lembagas/sebaran', [\App\Http\Controllers\LembagaController::class, 'sebaran'])->name('lembagas.sebaran');
     Route::resource('lembagas', \App\Http\Controllers\LembagaController::class);
 
     // Settings

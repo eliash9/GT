@@ -22,11 +22,12 @@ watch(search, debounce((value) => {
 }, 300));
 
 const columns = [
-    { key: 'nama', label: 'Nama Lembaga' },
-    { key: 'alamat', label: 'Alamat' },
+    { key: 'nama',    label: 'Nama Lembaga' },
+    { key: 'alamat',  label: 'Alamat' },
     { key: 'wilayah', label: 'Wilayah' },
-    { key: 'pjgt', label: 'PJGT' },
-    { key: 'status', label: 'Status' },
+    { key: 'pjgt',    label: 'PJGT' },
+    { key: 'status',  label: 'Status' },
+    { key: 'lokasi',  label: 'Lokasi' },
 ];
 
 const confirmDelete = ref<any>(null);
@@ -41,9 +42,7 @@ const handleImport = (e: Event) => {
     if (target.files && target.files[0]) {
         router.post(route('lembagas.import'), { file: target.files[0] }, {
             forceFormData: true,
-            onFinish: () => {
-                target.value = '';
-            }
+            onFinish: () => { target.value = ''; }
         });
     }
 };
@@ -71,7 +70,7 @@ const handleImport = (e: Event) => {
                 @delete="confirmDelete = $event"
             >
                 <template #filters>
-                    <div class="flex flex-col sm:flex-row gap-2 justify-between w-full">
+                    <div class="flex flex-col sm:flex-row gap-2 w-full">
                         <div class="w-full sm:max-w-xs relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,12 +85,25 @@ const handleImport = (e: Event) => {
                             />
                         </div>
                         <div class="flex gap-2">
-                            <a :href="route('lembagas.export')" class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            <!-- Peta Sebaran -->
+                            <Link :href="route('lembagas.sebaran')"
+                                class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                                </svg>
+                                Peta Sebaran
+                            </Link>
+                            <a :href="route('lembagas.export')"
+                                class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
                                 Export
                             </a>
                             <label class="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 inline-flex items-center gap-2 px-3 py-2 text-sm cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                </svg>
                                 Import
                                 <input type="file" class="hidden" @change="handleImport" accept=".xlsx,.csv" />
                             </label>
@@ -99,22 +111,45 @@ const handleImport = (e: Event) => {
                     </div>
                 </template>
 
+                <!-- Nama — clickable ke show -->
+                <template #nama="{ row }">
+                    <Link :href="route('lembagas.show', row.id)"
+                        class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {{ row.nama }}
+                    </Link>
+                </template>
+
                 <template #wilayah="{ row }">
                     <span v-if="row.wilayah">{{ row.wilayah.nama }}</span>
                     <span v-else class="text-gray-400 italic">N/A</span>
                 </template>
-                
+
                 <template #pjgt="{ row }">
                     <span v-if="row.pjgt">{{ row.pjgt.nama }}</span>
                     <span v-if="row.pjgt && row.pjgt.id_pjgt" class="text-xs text-gray-500 block">ID: {{ row.pjgt.id_pjgt }}</span>
                     <span v-else-if="!row.pjgt" class="text-gray-400 italic">N/A</span>
                 </template>
-                
+
                 <template #status="{ row }">
                     <span
                         class="inline-block px-2 py-0.5 text-xs rounded-full font-medium"
                         :class="row.status === 'aktif' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'"
                     >{{ row.status === 'aktif' ? 'Aktif' : 'Non-Aktif' }}</span>
+                </template>
+
+                <!-- Lokasi icon -->
+                <template #lokasi="{ row }">
+                    <span v-if="row.latitude && row.longitude">
+                        <Link :href="route('lembagas.show', row.id)"
+                            class="inline-flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Lihat
+                        </Link>
+                    </span>
+                    <span v-else class="text-xs text-gray-400 italic">—</span>
                 </template>
             </DataTable>
 

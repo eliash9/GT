@@ -36,27 +36,35 @@ class SantriController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nis' => 'required|string|unique:santris,nis',
-            'nama' => 'required|string|max:255',
+            'nis'           => 'required|string|unique:santris,nis',
+            'nama'          => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
-            'tempat_lahir' => 'required|string|max:255',
+            'tempat_lahir'  => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
-            'alamat_lengkap' => 'nullable|string',
-            'no_hp' => 'nullable|string',
-            'angkatan' => 'required|integer',
-            'status_tugas' => 'required|in:Menunggu,Sedang Bertugas,Selesai',
-            'kelas' => 'nullable|string|max:255',
-            'nama_ayah' => 'nullable|string|max:255',
-            'foto' => 'nullable|image|max:2048',
+            'alamat_lengkap'=> 'nullable|string',
+            'no_hp'         => 'nullable|string',
+            'angkatan'      => 'required|integer',
+            'status_tugas'  => 'required|in:Menunggu,Sedang Bertugas,Selesai',
+            'kelas'         => 'nullable|string|max:255',
+            'nama_ayah'     => 'nullable|string|max:255',
+            'foto'          => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('santri_fotos', 'public');
         }
 
-        \App\Models\Santri::create($validated);
+        $santri = \App\Models\Santri::create($validated);
 
-        return redirect()->route('santris.index')->with('success', 'Data santri berhasil ditambahkan.');
+        return redirect()->route('santris.show', $santri->id)
+            ->with('success', 'Data santri berhasil ditambahkan.');
+    }
+
+    public function show(\App\Models\Santri $santri)
+    {
+        return inertia('Santri/Show', [
+            'santri' => $santri,
+        ]);
     }
 
     public function edit(\App\Models\Santri $santri)
@@ -69,18 +77,18 @@ class SantriController extends Controller
     public function update(Request $request, \App\Models\Santri $santri)
     {
         $validated = $request->validate([
-            'nis' => 'required|string|unique:santris,nis,' . $santri->id,
-            'nama' => 'required|string|max:255',
+            'nis'           => 'required|string|unique:santris,nis,' . $santri->id,
+            'nama'          => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
-            'tempat_lahir' => 'required|string|max:255',
+            'tempat_lahir'  => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
-            'alamat_lengkap' => 'nullable|string',
-            'no_hp' => 'nullable|string',
-            'angkatan' => 'required|integer',
-            'status_tugas' => 'required|in:Menunggu,Sedang Bertugas,Selesai',
-            'kelas' => 'nullable|string|max:255',
-            'nama_ayah' => 'nullable|string|max:255',
-            'foto' => 'nullable|image|max:2048',
+            'alamat_lengkap'=> 'nullable|string',
+            'no_hp'         => 'nullable|string',
+            'angkatan'      => 'required|integer',
+            'status_tugas'  => 'required|in:Menunggu,Sedang Bertugas,Selesai',
+            'kelas'         => 'nullable|string|max:255',
+            'nama_ayah'     => 'nullable|string|max:255',
+            'foto'          => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -92,14 +100,16 @@ class SantriController extends Controller
 
         $santri->update($validated);
 
-        return redirect()->route('santris.index')->with('success', 'Data santri berhasil diperbarui.');
+        return redirect()->route('santris.show', $santri->id)
+            ->with('success', 'Data santri berhasil diperbarui.');
     }
 
     public function destroy(\App\Models\Santri $santri)
     {
         $santri->delete();
 
-        return redirect()->route('santris.index')->with('success', 'Data santri berhasil masuk ke keranjang sampah (soft delete).');
+        return redirect()->route('santris.index')
+            ->with('success', 'Data santri berhasil masuk ke keranjang sampah (soft delete).');
     }
 
     public function trash(Request $request)
@@ -129,7 +139,8 @@ class SantriController extends Controller
         $santri = \App\Models\Santri::onlyTrashed()->findOrFail($id);
         $santri->restore();
 
-        return redirect()->route('santris.trash')->with('success', 'Data santri berhasil dipulihkan.');
+        return redirect()->route('santris.trash')
+            ->with('success', 'Data santri berhasil dipulihkan.');
     }
 
     public function forceDelete($id)
@@ -142,7 +153,8 @@ class SantriController extends Controller
 
         $santri->forceDelete();
 
-        return redirect()->route('santris.trash')->with('success', 'Data santri berhasil dihapus secara permanen.');
+        return redirect()->route('santris.trash')
+            ->with('success', 'Data santri berhasil dihapus secara permanen.');
     }
 
     public function export()
@@ -158,6 +170,7 @@ class SantriController extends Controller
 
         \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\SantriImport, $request->file('file'));
 
-        return redirect()->route('santris.index')->with('success', 'Data Santri berhasil diimpor.');
+        return redirect()->route('santris.index')
+            ->with('success', 'Data Santri berhasil diimpor.');
     }
 }

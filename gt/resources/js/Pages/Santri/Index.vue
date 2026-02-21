@@ -23,11 +23,10 @@ watch(search, debounce((value) => {
 
 const columns = [
     { key: 'foto',          label: 'Foto' },
-    { key: 'nis',           label: 'NIS' },
     { key: 'nama',          label: 'Nama Lengkap' },
+    { key: 'nis',           label: 'NIS' },
     { key: 'jenis_kelamin', label: 'Gender' },
     { key: 'kelas',         label: 'Kelas' },
-    { key: 'nama_ayah',     label: 'Nama Ayah' },
     { key: 'angkatan',      label: 'Angkatan' },
     { key: 'status_tugas',  label: 'Status Tugas' },
 ];
@@ -74,7 +73,7 @@ const handleImport = (e: Event) => {
                 @delete="confirmDelete = $event"
             >
                 <template #filters>
-                    <div class="flex flex-col sm:flex-row gap-2 justify-between w-full">
+                    <div class="flex flex-col sm:flex-row gap-2 w-full">
                         <div class="w-full sm:max-w-xs relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,8 +105,20 @@ const handleImport = (e: Event) => {
                     </div>
                 </template>
                 <template #foto="{ row }">
-                    <img v-if="row.foto" :src="'/storage/' + row.foto" class="h-10 w-10 rounded-full object-cover border border-gray-200" alt="Foto" />
-                    <div v-else class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">N/A</div>
+                    <Link :href="route('santris.show', row.id)">
+                        <img v-if="row.foto" :src="'/storage/' + row.foto" class="h-10 w-10 rounded-full object-cover border border-gray-200 hover:ring-2 hover:ring-indigo-400 transition-all" alt="Foto" />
+                        <div v-else class="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                            {{ row.nama?.charAt(0)?.toUpperCase() }}
+                        </div>
+                    </Link>
+                </template>
+                <template #nama="{ row }">
+                    <div>
+                        <Link :href="route('santris.show', row.id)" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                            {{ row.nama }}
+                        </Link>
+                        <p v-if="row.nama_ayah" class="text-xs text-gray-400 mt-0.5">Ayah: {{ row.nama_ayah }}</p>
+                    </div>
                 </template>
                 <template #status_tugas="{ row }">
                     <span
@@ -116,6 +127,19 @@ const handleImport = (e: Event) => {
                                 row.status_tugas === 'Sedang Bertugas' ? 'bg-blue-50 text-blue-700' :
                                 'bg-green-50 text-green-700'"
                     >{{ row.status_tugas }}</span>
+                </template>
+                <template #actions="{ row }">
+                    <div class="flex items-center justify-end gap-3">
+                        <Link :href="route('santris.show', row.id)" class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 text-sm font-medium">
+                            Detail
+                        </Link>
+                        <Link :href="route('santris.edit', row.id)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
+                            Edit
+                        </Link>
+                        <button @click="$emit('delete', row)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium">
+                            Delete
+                        </button>
+                    </div>
                 </template>
             </DataTable>
 

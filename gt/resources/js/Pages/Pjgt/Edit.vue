@@ -20,7 +20,7 @@ const submit = () => form.put(route('pjgts.update', props.pjgt.id));
     <AuthenticatedLayout>
         <div class="max-w-xl">
             <div class="flex items-center gap-3 mb-6">
-                <Link :href="route('pjgts.index')" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                <Link :href="route('pjgts.show', pjgt.id)" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </Link>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Data PJGT</h1>
@@ -51,7 +51,7 @@ const submit = () => form.put(route('pjgts.update', props.pjgt.id));
                     <button type="submit" :disabled="form.processing" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
                         {{ form.processing ? 'Menyimpan…' : 'Simpan Perubahan' }}
                     </button>
-                    <Link :href="route('pjgts.index')" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</Link>
+                    <Link :href="route('pjgts.show', pjgt.id)" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</Link>
                 </div>
             </form>
         </div>

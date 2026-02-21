@@ -22,7 +22,7 @@ class PjgtController extends Controller
         $pjgts = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Pjgt/Index', [
-            'pjgts' => $pjgts,
+            'pjgts'   => $pjgts,
             'filters' => $request->only(['search']),
         ]);
     }
@@ -36,19 +36,34 @@ class PjgtController extends Controller
     {
         $validated = $request->validate([
             'id_pjgt' => 'nullable|string|max:255|unique:pjgts,id_pjgt',
-            'nama' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:50',
+            'nama'    => 'required|string|max:255',
+            'no_hp'   => 'nullable|string|max:50',
         ]);
 
-        Pjgt::create($validated);
+        $pjgt = Pjgt::create($validated);
 
-        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil ditambahkan.');
+        return redirect()->route('pjgts.show', $pjgt->id)
+            ->with('success', 'Data PJGT berhasil ditambahkan.');
+    }
+
+    public function show(Pjgt $pjgt)
+    {
+        $pjgt->load([
+            'wilayahs',
+            'wilayahs.lembagas',
+            'lembagas',
+            'lembagas.wilayah',
+        ]);
+
+        return Inertia::render('Pjgt/Show', [
+            'pjgt' => $pjgt,
+        ]);
     }
 
     public function edit(Pjgt $pjgt)
     {
         return Inertia::render('Pjgt/Edit', [
-            'pjgt' => $pjgt
+            'pjgt' => $pjgt,
         ]);
     }
 
@@ -56,20 +71,22 @@ class PjgtController extends Controller
     {
         $validated = $request->validate([
             'id_pjgt' => 'nullable|string|max:255|unique:pjgts,id_pjgt,' . $pjgt->id,
-            'nama' => 'required|string|max:255',
-            'no_hp' => 'nullable|string|max:50',
+            'nama'    => 'required|string|max:255',
+            'no_hp'   => 'nullable|string|max:50',
         ]);
 
         $pjgt->update($validated);
 
-        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil diperbarui.');
+        return redirect()->route('pjgts.show', $pjgt->id)
+            ->with('success', 'Data PJGT berhasil diperbarui.');
     }
 
     public function destroy(Pjgt $pjgt)
     {
         $pjgt->delete();
 
-        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil dihapus.');
+        return redirect()->route('pjgts.index')
+            ->with('success', 'Data PJGT berhasil dihapus.');
     }
 
     public function export()
@@ -85,6 +102,7 @@ class PjgtController extends Controller
 
         \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\PjgtImport, $request->file('file'));
 
-        return redirect()->route('pjgts.index')->with('success', 'Data PJGT berhasil diimpor.');
+        return redirect()->route('pjgts.index')
+            ->with('success', 'Data PJGT berhasil diimpor.');
     }
 }
