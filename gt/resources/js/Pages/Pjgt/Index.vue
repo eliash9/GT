@@ -114,7 +114,7 @@ const handleImport = (e: Event) => {
                         <Link :href="route('pjgts.edit', row.id)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">
                             Edit
                         </Link>
-                        <button @click="$emit('delete', row)" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium">
+                        <button @click="confirmDelete = row" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium">
                             Delete
                         </button>
                     </div>
@@ -137,7 +137,11 @@ const handleImport = (e: Event) => {
 
         <ConfirmModal
             :show="!!confirmDelete"
+            :title="'Hapus PJGT'"
             :message="`Hapus data PJGT '${confirmDelete?.nama}'?`"
+            :confirmText="'Ya, Hapus'"
+            :cancelText="'Batal'"
+            :type="'danger'"
             @confirm="doDelete"
             @cancel="confirmDelete = null"
         />
