@@ -71,6 +71,13 @@ Route::middleware('auth')->group(function () {
     // Role Management
     Route::resource('roles', \Modules\User\Presentation\Controllers\RoleController::class);
 
+    // Santri Skill Management (nested)
+    Route::middleware(['permission:edit santris'])->group(function () {
+        Route::post('santris/{santri}/skills', [\App\Http\Controllers\SantriSkillController::class, 'store'])->name('santri-skills.store');
+        Route::put('santris/{santri}/skills/{skill}', [\App\Http\Controllers\SantriSkillController::class, 'update'])->name('santri-skills.update');
+        Route::delete('santris/{santri}/skills/{skill}', [\App\Http\Controllers\SantriSkillController::class, 'destroy'])->name('santri-skills.destroy');
+    });
+
     // Santri Management
     Route::get('santris/trash', [\App\Http\Controllers\SantriController::class, 'trash'])->name('santris.trash');
     Route::post('santris/{santri}/restore', [\App\Http\Controllers\SantriController::class, 'restore'])->name('santris.restore')->withTrashed();
@@ -91,6 +98,31 @@ Route::middleware('auth')->group(function () {
     Route::post('lembagas/import', [\App\Http\Controllers\LembagaController::class, 'import'])->name('lembagas.import');
     Route::get('lembagas/sebaran', [\App\Http\Controllers\LembagaController::class, 'sebaran'])->name('lembagas.sebaran');
     Route::resource('lembagas', \App\Http\Controllers\LembagaController::class);
+
+    Route::middleware(['permission:edit lembagas'])->group(function () {
+        // Lembaga Kebutuhan Skill (nested)
+        Route::post('lembagas/{lembaga}/kebutuhan', [\App\Http\Controllers\LembagaKebutuhanController::class, 'store'])->name('lembaga-kebutuhan.store');
+        Route::put('lembagas/{lembaga}/kebutuhan/{kebutuhan}', [\App\Http\Controllers\LembagaKebutuhanController::class, 'update'])->name('lembaga-kebutuhan.update');
+        Route::delete('lembagas/{lembaga}/kebutuhan/{kebutuhan}', [\App\Http\Controllers\LembagaKebutuhanController::class, 'destroy'])->name('lembaga-kebutuhan.destroy');
+    });
+
+    // Skill Management
+    Route::resource('skills', \App\Http\Controllers\SkillController::class)->middleware('permission:view skills');
+
+    // Tahun PSM / Periode Penugasan
+    Route::resource('tahun-psm', \App\Http\Controllers\TahunPsmController::class)->middleware('permission:view tahun-psms');
+
+    // Penugasan Management
+    Route::middleware(['permission:view penugasans'])->group(function () {
+        Route::post('penugasans/{penugasan}/ubah-status', [\App\Http\Controllers\PenugasanController::class, 'ubahStatus'])->name('penugasans.ubah-status');
+        Route::resource('penugasans', \App\Http\Controllers\PenugasanController::class);
+    });
+
+    // Matching (Rekomendasi Penempatan)
+    Route::middleware(['permission:view matching'])->group(function () {
+        Route::get('matching', [\App\Http\Controllers\MatchingController::class, 'index'])->name('matching.index');
+        Route::post('matching/assign', [\App\Http\Controllers\MatchingController::class, 'assign'])->name('matching.assign');
+    });
 
     // Settings
     Route::get('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'index'])->name('settings.index');

@@ -22,8 +22,45 @@ const props = defineProps<{
         updated_at: string;
         wilayah?: { id: number; nama: string } | null;
         pjgt?: { id: number; nama: string; id_pjgt?: string; no_hp?: string } | null;
+        kebutuhans?: any[];
     };
+    availableSkills: any[];
 }>();
+
+import { useForm } from '@inertiajs/vue3';
+
+const formKeb = useForm({
+    skill_id: '',
+    prioritas: 'diutamakan',
+    kuota: 1,
+    keterangan: '',
+});
+
+const formKebVisible = ref(false);
+
+const addKebutuhan = () => {
+    formKeb.post(route('lembaga-kebutuhan.store', props.lembaga.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            formKeb.reset();
+            formKebVisible.value = false;
+        },
+    });
+};
+
+const removeKebutuhan = (keb: any) => {
+    if (confirm(`Hapus kebutuhan skill '${keb.skill?.nama}' dari lembaga ini?`)) {
+        router.delete(route('lembaga-kebutuhan.destroy', [props.lembaga.id, keb.id]), {
+            preserveScroll: true,
+        });
+    }
+};
+
+const prioColor: Record<string, string> = {
+    wajib:      'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    diutamakan: 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    opsional:   'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+};
 
 const confirmDelete = ref(false);
 const doDelete = () => {
@@ -178,8 +215,79 @@ const hasCoords = props.lembaga.latitude && props.lembaga.longitude;
                     </div>
                 </div>
 
-                <!-- Right: Map -->
-                <div class="lg:col-span-3">
+                <!-- Right: Map + Kebutuhan -->
+                <div class="lg:col-span-3 space-y-6">
+                    
+                    <!-- Panel: Kebutuhan Skill Lembaga -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 pb-3">
+                        <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between mb-4">
+                            <h2 class="text-sm font-semibold text-gray-900 dark:text-white">🧩 Kebutuhan Skill Guru Tugas</h2>
+                            <button @click="formKebVisible = !formKebVisible" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
+                                {{ formKebVisible ? 'Tutup Form' : '+ Tambah Kebutuhan' }}
+                            </button>
+                        </div>
+                        
+                        <div class="px-5">
+                            <!-- Form Tambah Kebutuhan -->
+                            <div v-if="formKebVisible" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl space-y-3 border border-gray-100 dark:border-gray-600">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Pilih Skill/Keahlian</label>
+                                        <select v-model="formKeb.skill_id" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm focus:ring-indigo-500 border-gray-300">
+                                            <option value="" disabled>-- Pilih --</option>
+                                            <option v-for="sk in availableSkills" :key="sk.id" :value="sk.id">{{ sk.nama }} ({{ sk.kategori }})</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Prioritas</label>
+                                        <select v-model="formKeb.prioritas" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm focus:ring-indigo-500 border-gray-300">
+                                            <option value="wajib">Wajib (Harus ada)</option>
+                                            <option value="diutamakan">Diutamakan (Sangat diharapkan)</option>
+                                            <option value="opsional">Opsional (Nilai plus)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div class="sm:col-span-1">
+                                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Kuota (Santri)</label>
+                                        <input v-model="formKeb.kuota" type="number" min="1" max="99" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm border-gray-300">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Keterangan Khusus (Opsional)</label>
+                                        <input v-model="formKeb.keterangan" type="text" placeholder="Catatan untuk santri yang akan di-matching..." class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm border-gray-300">
+                                    </div>
+                                </div>
+                                <div class="pt-2">
+                                    <button @click="addKebutuhan" :disabled="formKeb.processing" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                                        {{ formKeb.processing ? 'Menyimpan...' : 'Simpan Kebutuhan' }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Daftar Kebutuhan -->
+                            <div v-if="lembaga.kebutuhans && lembaga.kebutuhans.length > 0" class="space-y-2 mb-3">
+                                <div v-for="keb in lembaga.kebutuhans" :key="keb.id" class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ keb.skill?.nama }}</p>
+                                        <div class="flex items-center gap-2 mt-0.5">
+                                            <span class="inline-block px-1.5 py-0.5 text-[10px] font-bold uppercase rounded" :class="prioColor[keb.prioritas]">
+                                                {{ keb.prioritas }}
+                                            </span>
+                                            <span class="text-xs text-gray-500 font-medium">Kuota: {{ keb.kuota }} GT</span>
+                                            <span v-if="keb.keterangan" class="text-xs text-gray-400 italic hidden sm:inline-block">· {{ keb.keterangan }}</span>
+                                        </div>
+                                    </div>
+                                    <button @click="removeKebutuhan(keb)" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Hapus Kebutuhan">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-else class="text-sm text-center py-6 text-gray-400 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl mb-3">
+                                Lembaga ini belum memiliki kriteria kebutuhan riil Guru Tugas.
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
                         <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                             <h2 class="text-sm font-semibold text-gray-900 dark:text-white">📍 Lokasi di Peta</h2>

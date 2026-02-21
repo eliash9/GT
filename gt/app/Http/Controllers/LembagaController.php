@@ -59,10 +59,11 @@ class LembagaController extends Controller
 
     public function show(Lembaga $lembaga)
     {
-        $lembaga->load(['wilayah', 'pjgt']);
+        $lembaga->load(['wilayah', 'pjgt', 'kebutuhans.skill']);
 
         return Inertia::render('Lembaga/Show', [
             'lembaga' => $lembaga,
+            'availableSkills' => \App\Models\Skill::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 

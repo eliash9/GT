@@ -62,8 +62,11 @@ class SantriController extends Controller
 
     public function show(\App\Models\Santri $santri)
     {
+        $santri->load(['skills', 'penugasanAktif.lembaga', 'penugasanAktif.tahunPsm']);
+        
         return inertia('Santri/Show', [
             'santri' => $santri,
+            'availableSkills' => \App\Models\Skill::where('aktif', true)->orderBy('nama')->get(),
         ]);
     }
 

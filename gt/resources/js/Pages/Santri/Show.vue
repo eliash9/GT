@@ -21,8 +21,45 @@ const props = defineProps<{
         nama_ayah: string | null;
         created_at: string;
         updated_at: string;
+        skills?: any[];
+        penugasanAktif?: any;
     };
+    availableSkills: any[];
 }>();
+
+import { useForm } from '@inertiajs/vue3';
+
+const formSkill = useForm({
+    skill_id: '',
+    level: 'dasar',
+    keterangan: '',
+});
+
+const formSkillVisible = ref(false);
+
+const addSkill = () => {
+    formSkill.post(route('santri-skills.store', props.santri.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            formSkill.reset();
+            formSkillVisible.value = false;
+        },
+    });
+};
+
+const removeSkill = (skill: any) => {
+    if (confirm(`Hapus skill '${skill.nama}' dari santri ini?`)) {
+        router.delete(route('santri-skills.destroy', [props.santri.id, skill.id]), {
+            preserveScroll: true,
+        });
+    }
+};
+
+const levelColor: Record<string, string> = {
+    dasar:    'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    menengah: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    mahir:    'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+};
 
 const confirmDelete = ref(false);
 const doDelete = () => {
@@ -263,6 +300,16 @@ const tglUpdate = computed(() =>
                                         Santri telah menyelesaikan masa tugasnya.
                                     </template>
                                 </p>
+                                
+                                <div v-if="santri.penugasanAktif" class="mt-3 p-3 bg-indigo-50 border border-indigo-100 dark:bg-indigo-900/20 dark:border-indigo-800/30 rounded-lg">
+                                    <p class="text-xs font-semibold text-indigo-800 dark:text-indigo-400 mb-1">Ditempatkan Di:</p>
+                                    <Link :href="route('penugasans.show', santri.penugasanAktif.id)" class="text-sm font-medium text-indigo-700 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-100 hover:underline">
+                                        {{ santri.penugasanAktif.lembaga?.nama }} 
+                                        ({{ santri.penugasanAktif.tahun_psm?.judul ?? 'Tanpa Periode' }})
+                                    </Link>
+                                    <p class="text-xs text-indigo-600 dark:text-indigo-400/80 mt-1 capitalize">{{ santri.penugasanAktif.status }}</p>
+                                </div>
+
                                 <!-- Quick change status -->
                                 <div class="flex gap-2 mt-3">
                                     <Link
@@ -273,6 +320,67 @@ const tglUpdate = computed(() =>
                                     </Link>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Keahlian (Skill) -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Keahlian (Skill) Santri</h2>
+                            <button @click="formSkillVisible = !formSkillVisible" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
+                                {{ formSkillVisible ? 'Tutup Form' : '+ Tambah Skill' }}
+                            </button>
+                        </div>
+                        
+                        <!-- Form Tambah Skill -->
+                        <div v-if="formSkillVisible" class="mb-5 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl space-y-3 border border-gray-100 dark:border-gray-600">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Pilih Keahlian</label>
+                                <select v-model="formSkill.skill_id" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm focus:ring-indigo-500 border-gray-300">
+                                    <option value="" disabled>-- Pilih --</option>
+                                    <option v-for="sk in availableSkills" :key="sk.id" :value="sk.id">{{ sk.nama }} ({{ sk.kategori }})</option>
+                                </select>
+                                <p v-if="formSkill.errors.skill_id" class="text-xs text-red-500 mt-0.5">{{ formSkill.errors.skill_id }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tingkatan (Level)</label>
+                                <select v-model="formSkill.level" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm focus:ring-indigo-500 border-gray-300">
+                                    <option value="dasar">Dasar (Basic)</option>
+                                    <option value="menengah">Menengah (Intermediate)</option>
+                                    <option value="mahir">Mahir (Advanced)</option>
+                                </select>
+                                <p v-if="formSkill.errors.level" class="text-xs text-red-500 mt-0.5">{{ formSkill.errors.level }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Keterangan (Opsional)</label>
+                                <input v-model="formSkill.keterangan" type="text" placeholder="cth: Hafalan mutqin 10 juz..." class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm text-sm border-gray-300">
+                            </div>
+                            <div class="pt-2">
+                                <button @click="addSkill" :disabled="formSkill.processing" class="w-full px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                                    {{ formSkill.processing ? 'Menyimpan...' : 'Simpan Skill' }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Daftar Skill -->
+                        <div v-if="santri.skills && santri.skills.length > 0" class="space-y-2">
+                            <div v-for="sk in santri.skills" :key="sk.id" class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ sk.nama }}</p>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="inline-block px-1.5 py-0.5 text-[10px] font-bold uppercase rounded" :class="levelColor[sk.pivot.level]">
+                                            {{ sk.pivot.level }}
+                                        </span>
+                                        <span v-if="sk.pivot.keterangan" class="text-xs text-gray-500 truncate max-w-[200px]">{{ sk.pivot.keterangan }}</span>
+                                    </div>
+                                </div>
+                                <button @click="removeSkill(sk)" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Hapus Skill">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div v-else class="text-sm text-center py-6 text-gray-400 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+                            Belum ada skill yang ditambahkan.
                         </div>
                     </div>
 
