@@ -42,7 +42,7 @@ class Lembaga extends Model
      */
     public function penugasans(): HasMany
     {
-        return $this->hasMany(Penugasan::class);
+        return $this->hasMany(Penugasan::class)->latest();
     }
 
     /**
