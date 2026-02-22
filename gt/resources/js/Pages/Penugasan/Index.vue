@@ -98,8 +98,8 @@ const labelStatus: Record<string, string> = {
                     <table class="w-full text-sm">
                         <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             <tr>
-                                <th class="px-5 py-3 text-left">Santri</th>
-                                <th class="px-5 py-3 text-left">Lembaga</th>
+                                <th class="px-5 py-3 text-left">Santri & Kode</th>
+                                <th class="px-5 py-3 text-left">Lembaga & PJGT</th>
                                 <th class="px-5 py-3 text-left">Wilayah</th>
                                 <th class="px-5 py-3 text-center">Skor</th>
                                 <th class="px-5 py-3 text-center">Status</th>
@@ -117,10 +117,11 @@ const labelStatus: Record<string, string> = {
                                     <Link :href="route('penugasans.show', p.id)" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
                                         {{ p.santri?.nama }}
                                     </Link>
-                                    <p class="text-xs text-gray-400">{{ p.santri?.nis }}</p>
+                                    <p v-if="p.kode_tugas" class="text-xs font-mono font-medium text-gray-500 mt-0.5">#{{ p.kode_tugas }}</p>
                                 </td>
                                 <td class="px-5 py-3">
                                     <span class="font-medium text-gray-700 dark:text-gray-300">{{ p.lembaga?.nama }}</span>
+                                    <p class="text-xs text-gray-400 mt-0.5">👤 {{ p.lembaga?.pjgt?.nama ?? p.lembaga?.wilayah?.pjgt?.nama ?? '—' }}</p>
                                 </td>
                                 <td class="px-5 py-3 text-gray-500 dark:text-gray-400 text-xs">
                                     {{ p.lembaga?.wilayah?.nama ?? '—' }}

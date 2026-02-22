@@ -59,7 +59,7 @@ class LembagaController extends Controller
 
     public function show(Lembaga $lembaga)
     {
-        $lembaga->load(['wilayah', 'pjgt', 'kebutuhans.skill']);
+        $lembaga->load(['wilayah', 'pjgt', 'kebutuhans.skill', 'penugasans.santri', 'penugasans.tahunPsm']);
 
         return Inertia::render('Lembaga/Show', [
             'lembaga' => $lembaga,

@@ -13,14 +13,15 @@ class PenugasanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Penugasan::with(['santri', 'lembaga.wilayah', 'tahunPsm'])
+        $query = Penugasan::with(['santri', 'lembaga.wilayah.pjgt', 'lembaga.pjgt', 'tahunPsm'])
             ->latest();
 
         if ($request->filled('search')) {
             $s = $request->search;
             $query->whereHas('santri', fn($q) => $q->where('nama', 'like', "%$s%")
                 ->orWhere('nis', 'like', "%$s%"))
-                ->orWhereHas('lembaga', fn($q) => $q->where('nama', 'like', "%$s%"));
+                ->orWhereHas('lembaga', fn($q) => $q->where('nama', 'like', "%$s%"))
+                ->orWhere('kode_tugas', 'like', "%$s%");
         }
 
         if ($request->filled('status')) {
@@ -63,6 +64,8 @@ class PenugasanController extends Controller
             'santri_id'       => 'required|exists:santris,id',
             'lembaga_id'      => 'required|exists:lembagas,id',
             'tahun_psm_id'    => 'nullable|exists:tahun_psms,id',
+            'tanggal_mulai'   => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
             'catatan'         => 'nullable|string',
         ]);
 
@@ -80,7 +83,7 @@ class PenugasanController extends Controller
 
     public function show(Penugasan $penugasan)
     {
-        $penugasan->load(['santri.skills', 'lembaga.wilayah', 'lembaga.kebutuhans.skill', 'disetujuiOleh', 'tahunPsm']);
+        $penugasan->load(['santri.skills', 'lembaga.wilayah.pjgt', 'lembaga.pjgt', 'lembaga.kebutuhans.skill', 'disetujuiOleh', 'tahunPsm']);
 
         return Inertia::render('Penugasan/Show', [
             'penugasan' => $penugasan,
@@ -104,6 +107,8 @@ class PenugasanController extends Controller
         $validated = $request->validate([
             'lembaga_id'      => 'required|exists:lembagas,id',
             'tahun_psm_id'    => 'nullable|exists:tahun_psms,id',
+            'tanggal_mulai'   => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
             'catatan'         => 'nullable|string',
             'status'          => 'required|in:diusulkan,disetujui,aktif,selesai,dibatalkan',
         ]);

@@ -12,6 +12,8 @@ const props = defineProps<{
 const form = ref({
     lembaga_id:      String(props.penugasan.lembaga_id),
     tahun_psm_id:    props.penugasan.tahun_psm_id ? String(props.penugasan.tahun_psm_id) : '',
+    tanggal_mulai:   props.penugasan.tanggal_mulai ?? '',
+    tanggal_selesai: props.penugasan.tanggal_selesai ?? '',
     status:          props.penugasan.status,
     catatan:         props.penugasan.catatan ?? '',
 });
@@ -100,6 +102,22 @@ const submit = () => {
                             {{ t.aktif ? ' [Aktif]' : '' }}
                         </option>
                     </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tanggal Mulai -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tanggal Mulai (Opsional)</label>
+                        <input type="date" v-model="form.tanggal_mulai"
+                            class="input w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" />
+                    </div>
+
+                    <!-- Tanggal Selesai -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tanggal Selesai (Opsional)</label>
+                        <input type="date" v-model="form.tanggal_selesai"
+                            class="input w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" />
+                    </div>
                 </div>
 
                 <!-- Catatan -->

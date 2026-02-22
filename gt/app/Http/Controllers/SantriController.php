@@ -75,7 +75,7 @@ class SantriController extends Controller
 
     public function show(\App\Models\Santri $santri)
     {
-        $santri->load(['skills', 'penugasanAktif.lembaga', 'penugasanAktif.tahunPsm']);
+        $santri->load(['skills', 'penugasanAktif.lembaga', 'penugasanAktif.tahunPsm', 'penugasans.lembaga.wilayah', 'penugasans.tahunPsm']);
         
         return inertia('Santri/Show', [
             'santri' => $santri,

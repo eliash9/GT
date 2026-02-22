@@ -63,7 +63,12 @@ const nextStatuses: Record<string, { label: string; status: string; color: strin
                         </svg>
                     </Link>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Detail Penugasan</h1>
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Detail Penugasan</h1>
+                            <span v-if="penugasan.kode_tugas" class="px-2.5 py-1 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-md text-xs font-mono font-medium border border-gray-200 dark:border-gray-600">
+                                {{ penugasan.kode_tugas }}
+                            </span>
+                        </div>
                         <span class="inline-block mt-1 px-3 py-0.5 text-sm font-medium rounded-full" :class="statusColor[penugasan.status]">
                             {{ labelStatus[penugasan.status] }}
                         </span>
@@ -129,6 +134,9 @@ const nextStatuses: Record<string, { label: string; status: string; color: strin
                             {{ penugasan.lembaga?.nama }}
                         </Link>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">📍 {{ penugasan.lembaga?.wilayah?.nama ?? '—' }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            👤 PJGT: <span class="font-medium text-gray-700 dark:text-gray-300">{{ penugasan.lembaga?.pjgt?.nama ?? penugasan.lembaga?.wilayah?.pjgt?.nama ?? '—' }}</span>
+                        </p>
                     </div>
 
                     <!-- Kebutuhan lembaga -->
@@ -160,15 +168,13 @@ const nextStatuses: Record<string, { label: string; status: string; color: strin
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-500 dark:text-gray-400">Tanggal Mulai</span>
                             <span class="text-gray-700 dark:text-gray-300">
-                                {{ penugasan.tahun_psm?.tanggal_mulai_masehi ? new Date(penugasan.tahun_psm.tanggal_mulai_masehi).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—' }}
-                                <span v-if="penugasan.tahun_psm?.tanggal_mulai_hijriah" class="text-xs text-gray-400 ml-1">({{ penugasan.tahun_psm.tanggal_mulai_hijriah }})</span>
+                                {{ penugasan.tanggal_mulai ? new Date(penugasan.tanggal_mulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : (penugasan.tahun_psm?.tanggal_mulai_masehi ? new Date(penugasan.tahun_psm.tanggal_mulai_masehi).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-500 dark:text-gray-400">Tanggal Selesai</span>
                             <span class="text-gray-700 dark:text-gray-300">
-                                {{ penugasan.tahun_psm?.tanggal_selesai_masehi ? new Date(penugasan.tahun_psm.tanggal_selesai_masehi).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—' }}
-                                <span v-if="penugasan.tahun_psm?.tanggal_selesai_hijriah" class="text-xs text-gray-400 ml-1">({{ penugasan.tahun_psm.tanggal_selesai_hijriah }})</span>
+                                {{ penugasan.tanggal_selesai ? new Date(penugasan.tanggal_selesai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : (penugasan.tahun_psm?.tanggal_selesai_masehi ? new Date(penugasan.tahun_psm.tanggal_selesai_masehi).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '—') }}
                             </span>
                         </div>
                         <div v-if="penugasan.disetujui_oleh" class="flex items-center justify-between">

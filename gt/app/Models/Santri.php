@@ -90,4 +90,12 @@ class Santri extends Model
         $total = $this->jumlah_nilai_praktek;
         return $total > 0 ? round($total / 3, 2) : 0;
     }
+
+    /**
+     * Relasi ke penugasan (riwayat keseluruhan)
+     */
+    public function penugasans(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Penugasan::class)->latest();
+    }
 }

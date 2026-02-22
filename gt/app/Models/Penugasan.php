@@ -14,15 +14,35 @@ class Penugasan extends Model
     protected $table = 'penugasan';
 
     protected $fillable = [
+        'kode_tugas',
         'santri_id',
         'lembaga_id',
         'tahun_psm_id',
         'skor_kecocokan',
         'status',
         'catatan',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'disetujui_oleh',
         'disetujui_pada',
     ];
+
+    /**
+     * Boot the model to automatic setup attributes.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->kode_tugas)) {
+                $count = static::whereYear('created_at', date('Y'))
+                               ->whereMonth('created_at', date('m'))
+                               ->count() + 1;
+                $model->kode_tugas = 'GT-' . date('Ym') . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+            }
+        });
+    }
 
     protected $casts = [
         'disetujui_pada'  => 'datetime',

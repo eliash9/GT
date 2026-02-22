@@ -322,6 +322,59 @@ const hasCoords = props.lembaga.latitude && props.lembaga.longitude;
                     </div>
                 </div>
             </div>
+
+            <!-- Riwayat Penugasan Guru Tugas -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-6">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Riwayat Penempatan Guru Tugas</h2>
+                
+                <div v-if="lembaga.penugasans && lembaga.penugasans.length > 0" class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Kode Tugas</th>
+                                <th class="px-4 py-3 text-left">Nama Santri (GT)</th>
+                                <th class="px-4 py-3 text-center">Periode / Tahun</th>
+                                <th class="px-4 py-3 text-center">Status</th>
+                                <th class="px-4 py-3 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                            <tr v-for="tugas in lembaga.penugasans" :key="tugas.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                <td class="px-4 py-3">
+                                    <span class="font-mono text-gray-600 dark:text-gray-300 font-medium">{{ tugas.kode_tugas || '—' }}</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <Link :href="route('santris.show', tugas.santri_id)" class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                                        {{ tugas.santri?.nama }}
+                                    </Link>
+                                </td>
+                                <td class="px-4 py-3 text-center text-gray-600 dark:text-gray-300">
+                                    {{ tugas.tahun_psm?.judul ?? '—' }}
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="inline-block px-2.5 py-1 text-xs font-medium rounded-full" 
+                                        :class="tugas.status === 'diusulkan' ? 'bg-yellow-100 text-yellow-800' : 
+                                                tugas.status === 'disetujui' ? 'bg-blue-100 text-blue-800' :
+                                                tugas.status === 'aktif' ? 'bg-emerald-100 text-emerald-800' : 
+                                                tugas.status === 'selesai' ? 'bg-gray-100 text-gray-700' : 
+                                                'bg-red-100 text-red-700'">
+                                        {{ tugas.status.charAt(0).toUpperCase() + tugas.status.slice(1) }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <Link :href="route('penugasans.show', tugas.id)" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+                                        Detail
+                                    </Link>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-else class="text-center py-6 text-gray-400 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+                    Belum ada riwayat penugasan untuk lembaga ini.
+                </div>
+            </div>
+
         </div>
 
         <ConfirmModal
