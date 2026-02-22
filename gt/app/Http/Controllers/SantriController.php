@@ -16,6 +16,7 @@ class SantriController extends Controller
                 $q->where('nama', 'like', "%{$search}%")
                     ->orWhere('nis', 'like', "%{$search}%")
                     ->orWhere('kelas', 'like', "%{$search}%")
+                    ->orWhere('kamar', 'like', "%{$search}%")
                     ->orWhere('nama_ayah', 'like', "%{$search}%");
             });
         }
@@ -46,8 +47,20 @@ class SantriController extends Controller
             'angkatan'      => 'required|integer',
             'status_tugas'  => 'required|in:Menunggu,Sedang Bertugas,Selesai',
             'kelas'         => 'nullable|string|max:255',
+            'kamar'         => 'nullable|string|max:255',
             'nama_ayah'     => 'nullable|string|max:255',
             'foto'          => 'nullable|image|max:2048',
+            'haliyah_jabatan'           => 'nullable|string|max:255',
+            'haliyah_keaktifan'         => 'nullable|in:A,B,C',
+            'haliyah_pelanggaran'       => 'nullable|string',
+            'akademisi'                 => 'nullable|in:A,B,C',
+            'kelas_formal'              => 'nullable|string|max:255',
+            'nilai_ujian_tulis'         => 'nullable|integer|min:0|max:100',
+            'nilai_ujian_materi'        => 'nullable|integer|min:0|max:100',
+            'nilai_ujian_praktek_kelas' => 'nullable|integer|min:0|max:100',
+            'marhalah_alquran'          => 'nullable|in:A,B,C',
+            'status_seleksi'            => 'nullable|in:Belum Diproses,Lolos Tahap Awal,Lolos Tahap Akhir,Tidak Lolos',
+            'status_kelulusan'          => 'nullable|in:Belum Lulus,Lulus,Tidak Lulus',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -90,8 +103,20 @@ class SantriController extends Controller
             'angkatan'      => 'required|integer',
             'status_tugas'  => 'required|in:Menunggu,Sedang Bertugas,Selesai',
             'kelas'         => 'nullable|string|max:255',
+            'kamar'         => 'nullable|string|max:255',
             'nama_ayah'     => 'nullable|string|max:255',
             'foto'          => 'nullable|image|max:2048',
+            'haliyah_jabatan'           => 'nullable|string|max:255',
+            'haliyah_keaktifan'         => 'nullable|in:A,B,C',
+            'haliyah_pelanggaran'       => 'nullable|string',
+            'akademisi'                 => 'nullable|in:A,B,C',
+            'kelas_formal'              => 'nullable|string|max:255',
+            'nilai_ujian_tulis'         => 'nullable|integer|min:0|max:100',
+            'nilai_ujian_materi'        => 'nullable|integer|min:0|max:100',
+            'nilai_ujian_praktek_kelas' => 'nullable|integer|min:0|max:100',
+            'marhalah_alquran'          => 'nullable|in:A,B,C',
+            'status_seleksi'            => 'nullable|in:Belum Diproses,Lolos Tahap Awal,Lolos Tahap Akhir,Tidak Lolos',
+            'status_kelulusan'          => 'nullable|in:Belum Lulus,Lulus,Tidak Lulus',
         ]);
 
         if ($request->hasFile('foto')) {

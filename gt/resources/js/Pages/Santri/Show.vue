@@ -19,6 +19,18 @@ const props = defineProps<{
         foto: string | null;
         kelas: string | null;
         nama_ayah: string | null;
+        haliyah_jabatan: string | null;
+        haliyah_keaktifan: 'A' | 'B' | 'C' | null;
+        haliyah_pelanggaran: string | null;
+        akademisi: 'A' | 'B' | 'C' | null;
+        kelas_formal: string | null;
+        nilai_ujian_tulis: number | null;
+        nilai_ujian_materi: number | null;
+        nilai_ujian_praktek_kelas: number | null;
+        marhalah_alquran: 'A' | 'B' | 'C' | null;
+        status_seleksi: string;
+        jumlah_nilai_praktek: number;
+        rata_rata_nilai_praktek: number;
         created_at: string;
         updated_at: string;
         skills?: any[];
@@ -234,6 +246,11 @@ const tglUpdate = computed(() =>
                             </div>
 
                             <div>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Kamar</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.kamar || '—' }}</p>
+                            </div>
+
+                            <div>
                                 <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Tempat Lahir</p>
                                 <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.tempat_lahir }}</p>
                             </div>
@@ -381,6 +398,87 @@ const tglUpdate = computed(() =>
                         </div>
                         <div v-else class="text-sm text-center py-6 text-gray-400 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
                             Belum ada skill yang ditambahkan.
+                        </div>
+                    </div>
+
+                    <!-- Panel Evaluasi & Seleksi -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Evaluasi & Seleksi</h2>
+                            <div class="flex items-center gap-2">
+                                <span :class="{'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': santri.status_kelulusan === 'Lulus', 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': santri.status_kelulusan === 'Tidak Lulus', 'bg-gray-100 text-gray-800 dark:bg-gray-700/50 dark:text-gray-400': santri.status_kelulusan === 'Belum Lulus'}" class="px-2.5 py-0.5 rounded-full text-xs font-medium border border-gray-200 dark:border-gray-700">
+                                    {{ santri.status_kelulusan || 'Belum Lulus' }}
+                                </span>
+                                <span :class="{'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': santri.status_seleksi === 'Lolos Tahap Akhir', 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400': santri.status_seleksi === 'Lolos Tahap Awal', 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': santri.status_seleksi === 'Tidak Lolos', 'bg-gray-100 text-gray-800 dark:bg-gray-700/50 dark:text-gray-400': santri.status_seleksi === 'Belum Diproses'}" class="px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    {{ santri.status_seleksi || 'Belum Diproses' }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+                            <!-- Kolom 1 -->
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Kelas Formal</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.kelas_formal || '—' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Nilai Akademisi</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.akademisi || '—' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Tingkat Baca Al-Quran (Marhalah)</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.marhalah_alquran || '—' }}</p>
+                                </div>
+                                <div class="pt-2">
+                                    <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 border-b border-gray-100 dark:border-gray-700 pb-1">Haliyah (Perilaku)</p>
+                                    <div class="grid grid-cols-2 gap-2 mb-2">
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Jabatan</p>
+                                            <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.haliyah_jabatan || '—' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Keaktifan</p>
+                                            <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ santri.haliyah_keaktifan || '—' }}</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase">Catatan Pelanggaran</p>
+                                        <p class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 p-2 rounded mt-1">{{ santri.haliyah_pelanggaran || 'Tidak Ada Pelanggaran' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Kolom 2 -->
+                            <div>
+                                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 border-b border-gray-100 dark:border-gray-700 pb-1">Nilai Ujian Praktek</p>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-2 rounded">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Tulis</span>
+                                        <span class="font-mono font-medium text-gray-900 dark:text-white">{{ santri.nilai_ujian_tulis ?? '0' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-2 rounded">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Materi</span>
+                                        <span class="font-mono font-medium text-gray-900 dark:text-white">{{ santri.nilai_ujian_materi ?? '0' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-2 rounded">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Praktek / Penilaian Kelas</span>
+                                        <span class="font-mono font-medium text-gray-900 dark:text-white">{{ santri.nilai_ujian_praktek_kelas ?? '0' }}</span>
+                                    </div>
+                                    
+                                    <div class="pt-2 border-t border-gray-200 dark:border-gray-600 space-y-2 mt-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-semibold text-gray-500 uppercase">Total Jumlah</span>
+                                            <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">{{ santri.jumlah_nilai_praktek }}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-xs font-semibold text-gray-500 uppercase">Nilai Rata-rata</span>
+                                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-lg">{{ santri.rata_rata_nilai_praktek }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

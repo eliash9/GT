@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             SettingsSeeder::class,
+            SeleksiGTSeeder::class,
         ]);
 
         // Create default admin user

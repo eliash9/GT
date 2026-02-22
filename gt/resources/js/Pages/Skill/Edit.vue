@@ -38,7 +38,7 @@ const submit = () => {
         <div class="max-w-lg space-y-5">
             <!-- Header -->
             <div class="flex items-center gap-3">
-                <Link :href="route('skills.show', skill.id)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                <Link :href="route('skills.index')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
@@ -100,7 +100,7 @@ const submit = () => {
                         class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors">
                         {{ loading ? 'Menyimpan...' : 'Simpan Perubahan' }}
                     </button>
-                    <Link :href="route('skills.show', skill.id)" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Batal</Link>
+                    <Link :href="route('skills.index')" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Batal</Link>
                 </div>
             </form>
         </div>

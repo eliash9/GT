@@ -27,6 +27,7 @@ const columns = [
     { key: 'nis',           label: 'NIS' },
     { key: 'jenis_kelamin', label: 'Gender' },
     { key: 'kelas',         label: 'Kelas' },
+    { key: 'kamar',         label: 'Kamar' },
     { key: 'angkatan',      label: 'Angkatan' },
     { key: 'status_tugas',  label: 'Status Tugas' },
 ];

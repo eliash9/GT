@@ -105,7 +105,7 @@ const badgeKategori: Record<string, string> = {
                             <tr v-for="skill in skills.data" :key="skill.id"
                                 class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                                 <td class="px-5 py-3">
-                                    <Link :href="route('skills.show', skill.id)"
+                                    <Link :href="route('skills.edit', skill.id)"
                                         class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
                                         {{ skill.nama }}
                                     </Link>

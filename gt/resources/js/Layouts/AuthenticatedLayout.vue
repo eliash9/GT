@@ -60,7 +60,14 @@ const navItems = computed((): NavItem[] => {
     }
 
     if (can('view santris')) {
-        items.push({ label: 'Data GT', icon: 'users', route: 'santris.index' });
+        items.push({
+            label: 'Data GT', icon: 'users',
+            children: [
+                { label: 'Database Santri GT', route: 'santris.index' },
+                { label: 'Seleksi Cepat / Massal', route: 'seleksi.index' },
+                { label: 'Rekap Hasil Seleksi', route: 'seleksi.rekap' },
+            ]
+        });
     }
     
     if (can('view lembagas') || can('view wilayahs') || can('view pjgts') || can('view skills')) {

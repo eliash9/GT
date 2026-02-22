@@ -13,8 +13,20 @@ const form = useForm({
     nama_ayah: '',
     angkatan: '',
     kelas: '',
+    kamar: '',
     status_tugas: 'Menunggu',
     foto: null as File | null,
+    haliyah_jabatan: '',
+    haliyah_keaktifan: '',
+    haliyah_pelanggaran: '',
+    akademisi: '',
+    kelas_formal: '',
+    nilai_ujian_tulis: '',
+    nilai_ujian_materi: '',
+    nilai_ujian_praktek_kelas: '',
+    marhalah_alquran: '',
+    status_seleksi: 'Belum Diproses',
+    status_kelulusan: 'Belum Lulus',
 });
 
 const submit = () => form.post(route('santris.store'));
@@ -86,6 +98,11 @@ const submit = () => form.post(route('santris.store'));
                         <input v-model="form.kelas" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300" placeholder="Kelas saat ini" />
                         <p v-if="form.errors.kelas" class="text-red-500 text-xs mt-1">{{ form.errors.kelas }}</p>
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kamar</label>
+                        <input v-model="form.kamar" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Contoh: A-1, B-2" />
+                        <p v-if="form.errors.kamar" class="text-red-500 text-xs mt-1">{{ form.errors.kamar }}</p>
+                    </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Upload Foto</label>
@@ -108,6 +125,105 @@ const submit = () => form.post(route('santris.store'));
                         <p v-if="form.errors.status_tugas" class="text-red-500 text-xs mt-1">{{ form.errors.status_tugas }}</p>
                     </div>
 
+                </div>
+
+                <!-- Bagian Penilaian / Seleksi -->
+                <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Data Evaluasi & Seleksi</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas Formal</label>
+                            <input v-model="form.kelas_formal" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Misal: Lulus SMA, Kelas XI" />
+                            <p v-if="form.errors.kelas_formal" class="text-red-500 text-xs mt-1">{{ form.errors.kelas_formal }}</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Akademisi</label>
+                            <select v-model="form.akademisi" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300">
+                                <option value="">— Pilih Nilai —</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                            <p v-if="form.errors.akademisi" class="text-red-500 text-xs mt-1">{{ form.errors.akademisi }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Haliyah: Jabatan di Pondok</label>
+                            <input v-model="form.haliyah_jabatan" type="text" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Mis. Ketua Kamar" />
+                            <p v-if="form.errors.haliyah_jabatan" class="text-red-500 text-xs mt-1">{{ form.errors.haliyah_jabatan }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Haliyah: Keaktifan</label>
+                            <select v-model="form.haliyah_keaktifan" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300">
+                                <option value="">— Pilih Level —</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                            <p v-if="form.errors.haliyah_keaktifan" class="text-red-500 text-xs mt-1">{{ form.errors.haliyah_keaktifan }}</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Haliyah: Pelanggaran (opsional)</label>
+                            <textarea v-model="form.haliyah_pelanggaran" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" rows="2" placeholder="Catatan pelanggaran jika ada"></textarea>
+                            <p v-if="form.errors.haliyah_pelanggaran" class="text-red-500 text-xs mt-1">{{ form.errors.haliyah_pelanggaran }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tingkat Baca Al-Quran (Marhalah)</label>
+                            <select v-model="form.marhalah_alquran" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300">
+                                <option value="">— Pilih Tingkat —</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                            <p v-if="form.errors.marhalah_alquran" class="text-red-500 text-xs mt-1">{{ form.errors.marhalah_alquran }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status Seleksi Awal</label>
+                            <select v-model="form.status_seleksi" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300">
+                                <option value="Belum Diproses">Belum Diproses</option>
+                                <option value="Lolos Tahap Awal">Lolos Tahap Awal</option>
+                                <option value="Lolos Tahap Akhir" :disabled="form.status_kelulusan !== 'Lulus'">Lolos Tahap Akhir</option>
+                                <option value="Tidak Lolos">Tidak Lolos</option>
+                            </select>
+                            <p v-if="form.errors.status_seleksi" class="text-red-500 text-xs mt-1">{{ form.errors.status_seleksi }}</p>
+                            <p v-if="form.status_kelulusan !== 'Lulus' && form.status_seleksi === 'Lolos Tahap Akhir'" class="text-red-500 text-xs mt-1">Harus Lulus untuk Lolos Tahap Akhir!</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status Kelulusan</label>
+                            <select v-model="form.status_kelulusan" @change="(form.status_kelulusan !== 'Lulus' && form.status_seleksi === 'Lolos Tahap Akhir') ? form.status_seleksi = 'Belum Diproses' : null" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300">
+                                <option value="Belum Lulus">Belum Lulus</option>
+                                <option value="Lulus">Lulus</option>
+                                <option value="Tidak Lulus">Tidak Lulus</option>
+                            </select>
+                            <p v-if="form.errors.status_kelulusan" class="text-red-500 text-xs mt-1">{{ form.errors.status_kelulusan }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nilai Ujian: Tulis</label>
+                            <input v-model="form.nilai_ujian_tulis" type="number" min="0" max="100" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Skala 0-100" />
+                            <p v-if="form.errors.nilai_ujian_tulis" class="text-red-500 text-xs mt-1">{{ form.errors.nilai_ujian_tulis }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nilai Ujian: Materi</label>
+                            <input v-model="form.nilai_ujian_materi" type="number" min="0" max="100" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Skala 0-100" />
+                            <p v-if="form.errors.nilai_ujian_materi" class="text-red-500 text-xs mt-1">{{ form.errors.nilai_ujian_materi }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nilai Ujian: Praktek Kelas</label>
+                            <input v-model="form.nilai_ujian_praktek_kelas" type="number" min="0" max="100" class="input dark:bg-gray-700 dark:text-white dark:border-gray-600 block w-full rounded-md shadow-sm sm:text-sm focus:ring-indigo-500 border-gray-300" placeholder="Skala 0-100" />
+                            <p v-if="form.errors.nilai_ujian_praktek_kelas" class="text-red-500 text-xs mt-1">{{ form.errors.nilai_ujian_praktek_kelas }}</p>
+                        </div>
+
+                    </div>
                 </div>
 
                 <div class="flex gap-3 pt-2">

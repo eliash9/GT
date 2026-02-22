@@ -65,6 +65,7 @@ class MatchingController extends Controller
         // Santri yang belum punya penugasan aktif
         $santris = Santri::with(['skills'])
             ->where('status_tugas', 'Menunggu')
+            ->where('status_seleksi', 'Lolos Tahap Akhir')
             ->whereDoesntHave('penugasanAktif')
             ->get();
 

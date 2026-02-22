@@ -8,6 +8,14 @@ use Inertia\Inertia;
 
 class SkillController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view skills')->only(['index', 'show']);
+        $this->middleware('permission:create skills')->only(['create', 'store']);
+        $this->middleware('permission:edit skills')->only(['edit', 'update']);
+        $this->middleware('permission:delete skills')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = Skill::query();
@@ -51,7 +59,7 @@ class SkillController extends Controller
 
         $skill = Skill::create($validated);
 
-        return redirect()->route('skills.show', $skill->id)
+        return redirect()->route('skills.index')
             ->with('success', 'Skill berhasil ditambahkan.');
     }
 
@@ -84,7 +92,7 @@ class SkillController extends Controller
 
         $skill->update($validated);
 
-        return redirect()->route('skills.show', $skill->id)
+        return redirect()->route('skills.index')
             ->with('success', 'Skill berhasil diperbarui.');
     }
 

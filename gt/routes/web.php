@@ -86,6 +86,11 @@ Route::middleware('auth')->group(function () {
     Route::post('santris/import', [\App\Http\Controllers\SantriController::class, 'import'])->name('santris.import');
     Route::resource('santris', \App\Http\Controllers\SantriController::class);
 
+    // Seleksi Management
+    Route::get('seleksi', [\App\Http\Controllers\SeleksiController::class, 'index'])->name('seleksi.index');
+    Route::post('seleksi/mass-update', [\App\Http\Controllers\SeleksiController::class, 'massUpdate'])->name('seleksi.mass-update');
+    Route::get('seleksi/rekap', [\App\Http\Controllers\SeleksiController::class, 'rekap'])->name('seleksi.rekap');
+
     // Category Management
     Route::resource('categories', \Modules\Category\Presentation\Controllers\CategoryController::class);
 
@@ -107,7 +112,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Skill Management
-    Route::resource('skills', \App\Http\Controllers\SkillController::class)->middleware('permission:view skills');
+    Route::resource('skills', \App\Http\Controllers\SkillController::class);
 
     // Tahun PSM / Periode Penugasan
     Route::resource('tahun-psm', \App\Http\Controllers\TahunPsmController::class)->middleware('permission:view tahun-psms');

@@ -21,13 +21,25 @@ class SantriExport implements FromCollection, WithHeadings, WithMapping
             'Nama Lengkap',
             'Jenis Kelamin',
             'Kelas',
+            'Kamar',
             'Nama Ayah/Wali',
             'Tempat Lahir',
             'Tanggal Lahir',
             'Nomor HP',
             'Alamat Lengkap',
             'Angkatan',
-            'Status Tugas'
+            'Status Tugas',
+            'Kelas Formal',
+            'Jabatan Haliyah',
+            'Keaktifan Haliyah',
+            'Pelanggaran Haliyah',
+            'Akademisi',
+            'Marhalah Al-Quran',
+            'Nilai Ujian Tulis',
+            'Nilai Ujian Materi',
+            'Nilai Ujian Praktek Kelas',
+            'Status Seleksi',
+            'Status Kelulusan'
         ];
     }
 
@@ -38,6 +50,7 @@ class SantriExport implements FromCollection, WithHeadings, WithMapping
             $santri->nama,
             $santri->jenis_kelamin,
             $santri->kelas,
+            $santri->kamar,
             $santri->nama_ayah,
             $santri->tempat_lahir,
             $santri->tanggal_lahir,
@@ -45,6 +58,17 @@ class SantriExport implements FromCollection, WithHeadings, WithMapping
             $santri->alamat_lengkap,
             $santri->angkatan,
             $santri->status_tugas,
+            $santri->kelas_formal,
+            $santri->haliyah_jabatan,
+            $santri->haliyah_keaktifan,
+            $santri->haliyah_pelanggaran,
+            $santri->akademisi,
+            $santri->marhalah_alquran,
+            $santri->nilai_ujian_tulis,
+            $santri->nilai_ujian_materi,
+            $santri->nilai_ujian_praktek_kelas,
+            $santri->status_seleksi,
+            $santri->status_kelulusan,
         ];
     }
 }

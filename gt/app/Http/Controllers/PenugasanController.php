@@ -45,6 +45,7 @@ class PenugasanController extends Controller
     {
         return Inertia::render('Penugasan/Create', [
             'santris'  => Santri::where('status_tugas', 'Menunggu')
+                ->where('status_seleksi', 'Lolos Tahap Akhir')
                 ->whereDoesntHave('penugasanAktif')
                 ->orderBy('nama')
                 ->get(['id', 'nis', 'nama', 'kelas', 'angkatan']),
