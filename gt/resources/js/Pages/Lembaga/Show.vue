@@ -23,6 +23,7 @@ const props = defineProps<{
         wilayah?: { id: number; nama: string } | null;
         pjgt?: { id: number; nama: string; id_pjgt?: string; no_hp?: string } | null;
         kebutuhans?: any[];
+        penugasans?: any[];
     };
     availableSkills: any[];
 }>();

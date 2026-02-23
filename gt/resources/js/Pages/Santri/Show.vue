@@ -33,8 +33,11 @@ const props = defineProps<{
         rata_rata_nilai_praktek: number;
         created_at: string;
         updated_at: string;
+        kamar?: string | null;
+        status_kelulusan?: string | null;
         skills?: any[];
         penugasanAktif?: any;
+        penugasans?: any[];
     };
     availableSkills: any[];
 }>();
