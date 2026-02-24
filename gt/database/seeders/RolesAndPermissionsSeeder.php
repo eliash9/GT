@@ -62,5 +62,10 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
         $superAdmin->syncPermissions(Permission::all());
+
+        // Roles for PWA Users
+        Role::firstOrCreate(['name' => 'gt', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'pjgt', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'korwil', 'guard_name' => 'web']);
     }
 }

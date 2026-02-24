@@ -94,6 +94,20 @@ const navItems = computed((): NavItem[] => {
         });
     }
 
+    items.push({
+        label: 'Cek Laporan Masuk', icon: 'clipboard',
+        route: 'reports.index'
+    });
+
+    items.push({
+        label: 'Analisa Laporan', icon: 'chart-pie',
+        route: 'reports.analytics'
+    });
+
+    items.push({
+        label: 'Master Laporan', icon: 'settings',
+        route: 'report-categories.index'
+    });
 
     if (can('view settings')) {
         items.push({

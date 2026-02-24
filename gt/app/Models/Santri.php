@@ -36,8 +36,14 @@ class Santri extends Model
         'nilai_ujian_praktek_kelas',
         'marhalah_alquran',
         'status_seleksi',
-        'status_kelulusan'
+        'status_kelulusan',
+        'user_id'
     ];
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\User\Infrastructure\Models\User::class);
+    }
 
     /**
      * @var array

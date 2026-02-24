@@ -129,7 +129,19 @@ Route::middleware('auth')->group(function () {
         Route::post('matching/assign', [\App\Http\Controllers\MatchingController::class, 'assign'])->name('matching.assign');
     });
 
+    // Reports
+    Route::get('reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/analytics', [\App\Http\Controllers\Admin\ReportController::class, 'analytics'])->name('reports.analytics');
+    Route::get('reports/analytics/data', [\App\Http\Controllers\Admin\ReportController::class, 'analyticsData'])->name('reports.analytics.data');
+    Route::get('reports/targets', [\App\Http\Controllers\Admin\ReportController::class, 'getTargets'])->name('reports.targets');
+    Route::get('reports/create', [\App\Http\Controllers\Admin\ReportController::class, 'create'])->name('reports.create');
+    Route::post('reports/init', [\App\Http\Controllers\Admin\ReportController::class, 'init'])->name('reports.init');
+    Route::resource('reports', \App\Http\Controllers\Admin\ReportController::class)->except(['create', 'show', 'index']);
+
     // Settings
+    Route::resource('report-categories', \App\Http\Controllers\Admin\ReportCategoryController::class);
+    Route::resource('report-questions', \App\Http\Controllers\Admin\ReportQuestionController::class);
+
     Route::get('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'update'])->name('settings.update');
     Route::get('/activity-log', [\Modules\Setting\Presentation\Controllers\ActivityLogController::class, 'index'])->name('activity-log.index');
