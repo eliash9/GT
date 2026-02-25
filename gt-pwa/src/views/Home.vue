@@ -21,7 +21,7 @@ onMounted(async () => {
             <div class="h-4 w-48 bg-gray-200 animate-pulse rounded-lg"></div>
         </div>
         <div v-else>
-            <h1 class="text-2xl font-black text-gray-900 leading-tight">Halo, {{ auth.user?.name }}!</h1>
+            <h1 class="text-2xl font-black text-gray-900 leading-tight">Assalamualaikum, {{ auth.user?.user?.name }}!</h1>
             <p class="text-gray-500 text-sm mt-1">Selamat datang di portal pelaporan GT.</p>
         </div>
         <button @click="auth.logout" class="p-2 text-gray-400 hover:text-red-500 transition active:scale-90">
@@ -38,7 +38,16 @@ onMounted(async () => {
                 <div class="h-4 w-24 bg-white/10 animate-pulse rounded"></div>
             </div>
             <div v-else>
-                <p class="text-xl font-bold leading-tight">{{ auth.user?.details?.santri?.penugasan_aktif?.lembaga?.nama || 'Tidak ada penugasan aktif' }}</p>
+                <div v-if="auth.user?.details?.is_gt">
+                    <p class="text-xl font-bold leading-tight">{{ auth.user?.details?.santri?.penugasan_aktif?.lembaga?.nama || 'Tidak ada penugasan aktif' }}</p>
+                </div>
+                <div v-else-if="auth.user?.details?.is_pjgt">
+                    <p class="text-xl font-bold leading-tight">{{ auth.user?.details?.pjgt?.lembagas?.length || 0 }} Lembaga Terdaftar</p>
+                </div>
+                <div v-else-if="auth.user?.details?.is_korwil">
+                    <p class="text-xl font-bold leading-tight">Koordinat Wilayah: {{ auth.user?.details?.pjgt?.wilayahs?.length || 0 }} Wilayah</p>
+                </div>
+
                 <div class="inline-flex items-center mt-3 px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
                     {{ auth.user?.details?.is_gt ? 'Guru Tugas' : (auth.user?.details?.is_pjgt ? 'PJGT' : 'Korwil') }}
                 </div>
@@ -64,6 +73,39 @@ onMounted(async () => {
             </div>
             <span class="text-sm font-bold text-gray-700">Lihat Riwayat</span>
         </RouterLink>
+    </div>
+
+    <!-- Details for PJGT/Korwil -->
+    <div v-if="!loading && (auth.user?.details?.is_pjgt || auth.user?.details?.is_korwil)" class="mb-8 space-y-4">
+        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest px-1">Daftar Lembaga & GT</h3>
+        
+        <div v-if="auth.user?.details?.pjgt?.lembagas?.length > 0">
+            <div v-for="l in auth.user?.details?.pjgt?.lembagas" :key="l.id" class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm mb-3">
+                <h4 class="font-bold text-gray-800">{{ l.nama }}</h4>
+                <div v-if="l.santri_aktif?.length > 0" class="mt-2 space-y-1">
+                    <p v-for="p in l.santri_aktif" :key="p.id" class="text-xs text-gray-500 flex items-center">
+                        <span class="h-1.5 w-1.5 bg-green-500 rounded-full mr-2"></span>
+                        {{ p.santri?.nama }} (GT)
+                    </p>
+                </div>
+                <p v-else class="text-[10px] text-gray-400 mt-1 italic">Belum ada GT aktif</p>
+            </div>
+        </div>
+
+        <div v-if="auth.user?.details?.is_korwil && auth.user?.details?.pjgt?.wilayahs?.length > 0">
+             <div v-for="w in auth.user?.details?.pjgt?.wilayahs" :key="w.id" class="space-y-3">
+                 <p class="text-[10px] font-black text-indigo-600 uppercase tracking-tighter">WILAYAH: {{ w.nama }}</p>
+                 <div v-for="l in w.lembagas" :key="l.id" class="bg-indigo-50/30 p-5 rounded-3xl border border-indigo-100/50 mb-3">
+                    <h4 class="font-bold text-gray-800">{{ l.nama }}</h4>
+                    <div v-if="l.santri_aktif?.length > 0" class="mt-2 space-y-1">
+                        <p v-for="p in l.santri_aktif" :key="p.id" class="text-xs text-indigo-600/70 flex items-center">
+                            <span class="h-1.5 w-1.5 bg-indigo-500 rounded-full mr-2"></span>
+                            {{ p.santri?.nama }} (GT)
+                        </p>
+                    </div>
+                </div>
+             </div>
+        </div>
     </div>
 
     <!-- Info Section -->

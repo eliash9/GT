@@ -14,12 +14,31 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required', // This will accept email, NIS, or No HP
             'password' => 'required',
             'device_name' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $identifier = $request->email;
+        $user = null;
+
+        // Try as Email
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = User::where('email', $identifier)->first();
+        } else {
+            // Try as NIS (Santri)
+            $santri = \App\Models\Santri::where('nis', $identifier)->first();
+            if ($santri && $santri->user_id) {
+                $user = User::find($santri->user_id);
+            } else {
+                // Try as No HP (PJGT) - clean numeric first
+                $cleanPhone = preg_replace('/[^0-9]/', '', $identifier);
+                $pjgt = \App\Models\Pjgt::where('no_hp', 'LIKE', '%' . $cleanPhone . '%')->first();
+                if ($pjgt && $pjgt->user_id) {
+                    $user = User::find($pjgt->user_id);
+                }
+            }
+        }
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -37,9 +56,16 @@ class AuthController extends Controller
     {
         $user = $request->user()->load('roles');
         
-        // Link to Santri or Pjgt if exists
-        $santri = \App\Models\Santri::where('user_id', $user->id)->with('penugasanAktif.lembaga')->first();
-        $pjgt = \App\Models\Pjgt::where('user_id', $user->id)->first();
+        $santri = \App\Models\Santri::where('user_id', $user->id)
+            ->with(['penugasanAktif.lembaga.pjgt'])
+            ->first();
+            
+        $pjgt = \App\Models\Pjgt::where('user_id', $user->id)
+            ->with([
+                'lembagas.santriAktif.santri',
+                'wilayahs.lembagas.santriAktif.santri'
+            ])
+            ->first();
 
         return response()->json([
             'user' => $user,

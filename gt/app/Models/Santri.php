@@ -40,6 +40,22 @@ class Santri extends Model
         'user_id'
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($santri) {
+            if (!$santri->user_id) {
+                $user = \Modules\User\Infrastructure\Models\User::create([
+                    'name' => $santri->nama,
+                    'email' => $santri->nis . '@gt.com', 
+                    'password' => \Illuminate\Support\Facades\Hash::make($santri->nis),
+                ]);
+                $user->assignRole('gt');
+                $santri->user_id = $user->id;
+                $santri->saveQuietly();
+            }
+        });
+    }
+
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\Modules\User\Infrastructure\Models\User::class);

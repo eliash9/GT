@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/utils/api'
+
+const router = useRouter()
 
 const reports = ref<any[]>([])
 const loading = ref(true)
@@ -56,11 +59,21 @@ onMounted(async () => {
     </div>
 
     <div v-else class="space-y-4">
-        <div v-for="report in reports" :key="report.id" class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
+        <div v-for="report in reports" :key="report.id" 
+            @click="router.push({ name: 'Report', query: { month: report.period_month, year: report.period_year, santri_id: report.santri_id, lembaga_id: report.lembaga_id } })"
+            class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between active:scale-[0.98] transition cursor-pointer">
             <div class="flex-1 min-w-0 pr-4">
-                <p class="text-[10px] font-black uppercase tracking-widest text-green-600 mb-1">Diterima</p>
+                <p v-if="report.lembaga" class="text-[10px] font-black uppercase tracking-widest text-indigo-600 mb-1">
+                    {{ report.lembaga?.nama }} 
+                </p>
+                <p v-else class="text-[10px] font-black uppercase tracking-widest text-green-600 mb-1">Diterima</p>
+                
                 <h3 class="font-bold text-gray-800 truncate">{{ getPeriodLabel(report.period_month) }}</h3>
-                <p class="text-xs text-gray-400 mt-1">{{ report.period_year }} Hijri • {{ new Date(report.created_at).toLocaleDateString() }}</p>
+                
+                <p class="text-[11px] text-gray-500 mt-1 font-medium" v-if="report.santri">
+                    GT: {{ report.santri?.nama }}
+                </p>
+                <p class="text-[10px] text-gray-400 mt-1">{{ report.period_year }} Hijri • {{ new Date(report.created_at).toLocaleDateString() }}</p>
             </div>
             <div class="flex-shrink-0">
                 <div v-if="report.status === 'evaluated'" class="h-8 w-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">

@@ -184,11 +184,11 @@ class ReportController extends Controller
         $validated = $request->validate([
             'report_type' => 'required|in:gt,pjgt,korwil',
             'reporter_id' => 'required|integer',
-            'period_month' => 'required|integer|min:1|max:6',
+            'period_month' => 'required|integer|min:1|max:10',
             'period_year' => 'required|integer',
-            'santri_id' => 'nullable|integer',
-            'pjgt_id' => 'nullable|integer',
-            'lembaga_id' => 'nullable|integer',
+            'santri_id' => 'required|integer',
+            'pjgt_id' => 'required|integer',
+            'lembaga_id' => 'required|integer',
         ]);
 
         // Check if report exists
@@ -198,9 +198,9 @@ class ReportController extends Controller
                 'reporter_id' => $validated['reporter_id'],
                 'period_month' => $validated['period_month'],
                 'period_year' => $validated['period_year'],
-                'santri_id' => $validated['santri_id'] ?? null,
-                'lembaga_id' => $validated['lembaga_id'] ?? null,
-                'pjgt_id' => $validated['pjgt_id'] ?? null,
+                'santri_id' => $validated['santri_id'],
+                'lembaga_id' => $validated['lembaga_id'],
+                'pjgt_id' => $validated['pjgt_id'],
             ],
             [
                 'status' => 'draft',
