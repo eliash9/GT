@@ -38,6 +38,12 @@ const props = defineProps<{
         skills?: any[];
         penugasanAktif?: any;
         penugasans?: any[];
+        user?: {
+            id: number;
+            name: string;
+            email: string;
+            roles?: { name: string }[];
+        } | null;
     };
     availableSkills: any[];
 }>();
@@ -227,6 +233,37 @@ const tglUpdate = computed(() =>
                     <div class="text-xs text-gray-400 dark:text-gray-500 px-1 space-y-1">
                         <p>📅 Ditambahkan: {{ tglDibuat }}</p>
                         <p>🔄 Diperbarui: {{ tglUpdate }}</p>
+                    </div>
+
+                    <!-- Akun Login -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Akun Login</h3>
+                            <Link
+                                v-if="santri.user"
+                                :href="route('users.edit', santri.user.id)"
+                                class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                            >Edit Akun →</Link>
+                        </div>
+                        <div v-if="santri.user" class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                                </svg>
+                                <span class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate">{{ santri.user.email }}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span
+                                    v-for="role in santri.user.roles"
+                                    :key="role.name"
+                                    class="inline-block px-1.5 py-0.5 text-[10px] font-semibold rounded bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 uppercase"
+                                >{{ role.name }}</span>
+                            </div>
+                            <p class="text-xs text-gray-400">ID User: #{{ santri.user.id }}</p>
+                        </div>
+                        <div v-else class="text-xs text-amber-600 dark:text-amber-400 italic">
+                            Belum terhubung ke akun user.
+                        </div>
                     </div>
                 </div>
 

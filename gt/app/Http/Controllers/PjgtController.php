@@ -49,6 +49,7 @@ class PjgtController extends Controller
     public function show(Pjgt $pjgt)
     {
         $pjgt->load([
+            'user.roles',
             'wilayahs',
             'wilayahs.lembagas',
             'lembagas',
