@@ -28,7 +28,7 @@ const submit = () => form.put(route('lembagas.update', props.lembaga.id));
 <template>
     <Head title="Edit Lembaga" />
     <AuthenticatedLayout>
-        <div class="max-w-4xl">
+        <div class="max-w-4xl mx-auto">
             <div class="flex items-center gap-3 mb-6">
                 <Link :href="route('lembagas.show', lembaga.id)" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

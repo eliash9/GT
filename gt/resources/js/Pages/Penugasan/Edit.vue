@@ -44,7 +44,7 @@ const submit = () => {
 <template>
     <Head :title="`Edit Penugasan – ${penugasan.santri?.nama}`" />
     <AuthenticatedLayout>
-        <div class="max-w-2xl space-y-5">
+        <div class="max-w-2xl space-y-5 mx-auto">
             <div class="flex items-center gap-3">
                 <Link :href="route('penugasans.show', penugasan.id)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

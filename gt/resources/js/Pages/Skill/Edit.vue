@@ -35,7 +35,7 @@ const submit = () => {
 <template>
     <Head :title="`Edit Skill – ${skill.nama}`" />
     <AuthenticatedLayout>
-        <div class="max-w-lg space-y-5">
+        <div class="max-w-lg space-y-5 mx-auto">
             <!-- Header -->
             <div class="flex items-center gap-3">
                 <Link :href="route('skills.index')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">

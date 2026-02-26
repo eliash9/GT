@@ -76,7 +76,7 @@ const hasCoords = props.lembaga.latitude && props.lembaga.longitude;
 <template>
     <Head :title="`Detail – ${lembaga.nama}`" />
     <AuthenticatedLayout>
-        <div class="space-y-6 max-w-5xl">
+        <div class="space-y-6 w-full">
 
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

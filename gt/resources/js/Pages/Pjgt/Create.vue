@@ -14,7 +14,7 @@ const submit = () => form.post(route('pjgts.store'));
 <template>
     <Head title="Tambah PJGT" />
     <AuthenticatedLayout>
-        <div class="max-w-xl">
+        <div class="max-w-xl mx-auto">
             <div class="flex items-center gap-3 mb-6">
                 <Link :href="route('pjgts.index')" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
