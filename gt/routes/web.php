@@ -22,16 +22,35 @@ Route::get('/dashboard', function () {
         'pjgts' => \App\Models\Pjgt::count(),
     ];
 
-    $monthlyUsers = \Modules\User\Infrastructure\Models\User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-        ->whereYear('created_at', date('Y'))
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get()
-        ->keyBy('month');
+    // Laporan per periode Hijriah (period_month 1-10, period_year = tahun Hijriah)
+    // Ambil tahun Hijriah terkini dari data yang ada, fallback 1446
+    $hijriYear = (int) (\App\Models\Report::max('period_year') ?? 1446);
 
-    $usersChart = [];
-    for ($i = 1; $i <= 12; $i++) {
-        $usersChart[] = $monthlyUsers->has($i) ? $monthlyUsers[$i]->count : 0;
+    $periodLabels = [
+        1  => "Syawal - Dzulqa'dah",
+        2  => "Dzulqa'dah - Dzulhijjah",
+        3  => "Dzulhijjah - Muharam",
+        4  => "Muharam - Safar",
+        5  => "Safar - Rabi'ul Awal",
+        6  => "Rabi'ul Awal - Rabi'ul Akhir",
+        7  => "Rabi'ul Akhir - Jumadil Awal",
+        8  => "Jumadil Awal - Jumadil Akhir",
+        9  => "Jumadil Akhir - Rajab",
+        10 => "Rajab - Sya'ban",
+    ];
+
+    $monthlyReportsRaw = \App\Models\Report::selectRaw('period_month as month, report_type, COUNT(*) as count')
+        ->where('period_year', $hijriYear)
+        ->whereIn('report_type', ['gt', 'pjgt'])
+        ->groupBy('period_month', 'report_type')
+        ->orderBy('period_month')
+        ->get();
+
+    $gtChart   = [];
+    $pjgtChart = [];
+    for ($i = 1; $i <= 10; $i++) {
+        $gtChart[]   = $monthlyReportsRaw->where('month', $i)->where('report_type', 'gt')->first()->count   ?? 0;
+        $pjgtChart[] = $monthlyReportsRaw->where('month', $i)->where('report_type', 'pjgt')->first()->count ?? 0;
     }
 
     $santriStatus = \App\Models\Santri::select('status_tugas', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
@@ -47,9 +66,11 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', [
         'stats' => $stats,
         'charts' => [
-            'users_trend' => $usersChart,
+            'reports_trend' => ['gt' => $gtChart, 'pjgt' => $pjgtChart],
             'santri_status' => $santriStatusChart,
-        ]
+        ],
+        'hijriYear'    => $hijriYear,
+        'periodLabels' => array_values($periodLabels),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -141,6 +162,19 @@ Route::middleware('auth')->group(function () {
     // Settings
     Route::resource('report-categories', \App\Http\Controllers\Admin\ReportCategoryController::class);
     Route::resource('report-questions', \App\Http\Controllers\Admin\ReportQuestionController::class);
+
+    // Attendance Sessions
+    Route::post('attendance-sessions/{attendanceSession}/toggle', [\App\Http\Controllers\Admin\AttendanceSessionController::class, 'toggleStatus'])->name('attendance-sessions.toggle');
+    Route::get('attendance-sessions/{attendanceSession}/scanner', [\App\Http\Controllers\Admin\AttendanceSessionController::class, 'scanner'])->name('attendance-sessions.scanner');
+    Route::resource('attendance-sessions', \App\Http\Controllers\Admin\AttendanceSessionController::class);
+
+    // Attendance Reports
+    Route::get('attendance-reports', [\App\Http\Controllers\Admin\AttendanceReportController::class, 'index'])->name('attendance-reports.index');
+    Route::get('attendance-reports/export/excel', [\App\Http\Controllers\Admin\AttendanceReportController::class, 'exportExcel'])->name('attendance-reports.excel');
+    Route::get('attendance-reports/export/pdf', [\App\Http\Controllers\Admin\AttendanceReportController::class, 'exportPdf'])->name('attendance-reports.pdf');
+
+    // Attendance Check-in
+    Route::post('attendance/check-in', [\App\Http\Controllers\AttendanceController::class, 'checkIn'])->name('attendance.check-in');
 
     Route::get('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\Modules\Setting\Presentation\Controllers\SettingController::class, 'update'])->name('settings.update');

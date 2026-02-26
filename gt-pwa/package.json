@@ -12,7 +12,9 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "axios": "^1.13.5",
+    "html5-qrcode": "^2.3.8",
     "pinia": "^3.0.4",
+    "qrcode.vue": "^3.8.0",
     "vue": "^3.5.25",
     "vue-router": "^5.0.3"
   },

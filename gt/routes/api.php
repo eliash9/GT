@@ -15,4 +15,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/history', [\App\Http\Controllers\Api\ReportApiController::class, 'history']);
         Route::post('/submit', [\App\Http\Controllers\Api\ReportApiController::class, 'submit']);
     });
+
+    Route::post('/attendance/check-in', [\App\Http\Controllers\AttendanceController::class, 'checkIn']);
 });

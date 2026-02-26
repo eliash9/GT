@@ -10,12 +10,31 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'SiGT Laporan',
+        name: 'SiGT Mobile',
         short_name: 'SiGT',
-        description: 'Aplikasi Pelaporan GT, PJGT, dan Korwil',
-        theme_color: '#22c55e',
-        background_color: '#ffffff',
+        description: 'Aplikasi Pelaporan Guru Tugas (GT), PJGT, dan Korwil',
+        theme_color: '#0f7a5a',
+        background_color: '#0f7a5a',
         display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        icons: [
+          {
+            src: '/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      devOptions: {
+        enabled: true
       }
     })
   ],

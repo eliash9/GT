@@ -15,6 +15,25 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use \Laravel\Sanctum\HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->personal_qr_token)) {
+                $user->personal_qr_token = 'USR-' . \Illuminate\Support\Str::random(10) . '-' . time();
+            }
+        });
+
+        // Ensure token exists on retrieval for old users (optional, but safer than Command)
+        static::retrieved(function ($user) {
+            if (empty($user->personal_qr_token)) {
+                $user->personal_qr_token = 'USR-' . \Illuminate\Support\Str::random(10) . '-' . time();
+                $user->saveQuietly();
+            }
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -63,5 +82,15 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function santri()
+    {
+        return $this->hasOne(\App\Models\Santri::class);
+    }
+
+    public function pjgt()
+    {
+        return $this->hasOne(\App\Models\Pjgt::class);
     }
 }

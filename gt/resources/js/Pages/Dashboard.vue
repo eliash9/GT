@@ -5,33 +5,45 @@ import VueApexCharts from 'vue3-apexcharts';
 
 const props = defineProps<{
     stats: { users: number; santris: number; lembagas: number; pjgts: number };
-    charts: { 
-        users_trend: number[]; 
+    charts: {
+        reports_trend: { gt: number[]; pjgt: number[] };
         santri_status: { menunggu: number; bertugas: number; selesai: number };
     };
+    hijriYear: number;
+    periodLabels: string[];
 }>();
 
-const usersChartOptions = {
+const reportsChartOptions = {
     chart: { type: 'area' as const, height: 300, toolbar: { show: false }, background: 'transparent' },
     dataLabels: { enabled: false },
     stroke: { curve: 'smooth' as const, width: 2 },
-    xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
-    colors: ['#6366f1'],
-    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 90, 100] } },
-    theme: { mode: 'light' as const }
+    xaxis: { categories: props.periodLabels, labels: { rotate: -30, style: { fontSize: '10px' } } },
+    colors: ['#6366f1', '#f59e0b'],
+    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] } },
+    legend: { position: 'top' as const, horizontalAlign: 'right' as const },
+    tooltip: { shared: true, intersect: false },
+    theme: { mode: 'light' as const },
+    yaxis: { labels: { formatter: (v: number) => Math.round(v).toString() }, min: 0, forceNiceScale: true },
 };
 
-const usersChartSeries = [{ name: 'Users Registered', data: props.charts.users_trend }];
+const reportsChartSeries = [
+    { name: 'Laporan GT',   data: props.charts.reports_trend.gt },
+    { name: 'Laporan PJGT', data: props.charts.reports_trend.pjgt },
+];
 
 const santriChartOptions = {
     chart: { type: 'donut' as const, background: 'transparent' },
     labels: ['Menunggu', 'Sedang Bertugas', 'Selesai'],
     colors: ['#f59e0b', '#3b82f6', '#10b981'],
     legend: { position: 'bottom' as const },
-    theme: { mode: 'light' as const }
+    theme: { mode: 'light' as const },
 };
 
-const santriChartSeries = [props.charts.santri_status.menunggu, props.charts.santri_status.bertugas, props.charts.santri_status.selesai];
+const santriChartSeries = [
+    props.charts.santri_status.menunggu,
+    props.charts.santri_status.bertugas,
+    props.charts.santri_status.selesai,
+];
 
 const cards = [
     { label: 'Data Santri',      value: props.stats.santris,  icon: 'package', color: 'bg-emerald-500', href: 'santris.index' },
@@ -76,12 +88,21 @@ const iconPaths: Record<string, string> = {
                     </div>
                 </Link>
             </div>
+
             <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Line Chart: Users Trend -->
+                <!-- Area Chart: Laporan GT & PJGT per Bulan -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 lg:col-span-2">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">User Registrations</h2>
-                    <VueApexCharts type="area" height="300" :options="usersChartOptions" :series="usersChartSeries" />
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Masuk per Periode</h2>
+                            <p class="text-xs text-gray-400 mt-0.5">Tahun {{ hijriYear }} H · GT &amp; PJGT yang sudah melapor</p>
+                        </div>
+                        <Link :href="route('reports.index')" class="text-xs text-indigo-600 hover:underline font-medium">
+                            Lihat semua →
+                        </Link>
+                    </div>
+                    <VueApexCharts type="area" height="300" :options="reportsChartOptions" :series="reportsChartSeries" />
                 </div>
 
                 <!-- Donut Chart: Santri Status -->
@@ -92,6 +113,7 @@ const iconPaths: Record<string, string> = {
                     </div>
                 </div>
             </div>
+
             <!-- Quick actions -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>

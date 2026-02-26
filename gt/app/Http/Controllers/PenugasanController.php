@@ -85,8 +85,16 @@ class PenugasanController extends Controller
     {
         $penugasan->load(['santri.skills', 'lembaga.wilayah.pjgt', 'lembaga.pjgt', 'lembaga.kebutuhans.skill', 'disetujuiOleh', 'tahunPsm']);
 
+        $reports = \App\Models\Report::with(['creator', 'reporterGt', 'reporterPjgt', 'santri', 'pjgt', 'lembaga'])
+            ->where('santri_id', $penugasan->santri_id)
+            ->where('lembaga_id', $penugasan->lembaga_id)
+            ->orderBy('period_year', 'desc')
+            ->orderBy('period_month', 'desc')
+            ->get();
+
         return Inertia::render('Penugasan/Show', [
             'penugasan' => $penugasan,
+            'reports'   => $reports,
         ]);
     }
 
